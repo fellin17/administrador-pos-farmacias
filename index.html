@@ -13,12 +13,12 @@
   --accent:#3b82f6;--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--purple:#8b5cf6;
   --text:#f1f5f9;--muted:#94a3b8;--r:12px;
 }
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#1e3a5f;color:var(--text);min-height:100vh}
 
 /* LOGIN */
 #loginWrap{
   position:fixed;inset:0;
-  background:linear-gradient(135deg,#0f172a,#1a2d4a,#0f172a);
+  background:#1e3a5f;
   display:flex;align-items:center;justify-content:center;
   z-index:999;
 }
@@ -277,18 +277,19 @@ const fbCfg = {
 
 let db = null, lic = null, unsub = null;
 
-window.addEventListener('load', () => {
-  try {
-    firebase.initializeApp(fbCfg);
-    db  = firebase.firestore();
-    lic = db.collection('licencias');
-  } catch(e) { console.warn('Firebase:', e.message); }
+// Iniciar Firebase de inmediato
+try {
+  firebase.initializeApp(fbCfg);
+  db  = firebase.firestore();
+  lic = db.collection('licencias');
+} catch(e) { console.warn('Firebase:', e.message); }
 
-  // Sesión activa
-  if (sessionStorage.getItem('_aok') === '1') {
-    mostrarPanel();
-  }
-});
+// Sesión activa al cargar
+if (sessionStorage.getItem('_aok') === '1') {
+  document.getElementById('loginWrap').style.display = 'none';
+  document.getElementById('panelWrap').style.display = '';
+  setTimeout(escuchar, 300);
+}
 
 // ── LOGIN ─────────────────────────────────────────────────────────────────────
 function adminLogin() {
