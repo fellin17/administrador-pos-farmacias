@@ -3,259 +3,230 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Panel de Administración — Farmacia POS</title>
+<title>Panel Admin — Farmacia POS</title>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #0f172a; --surface: #1e293b; --surface2: #273549;
-    --border: #334155; --accent: #3b82f6; --accent-dark: #1d4ed8;
-    --green: #10b981; --red: #ef4444; --yellow: #f59e0b; --purple: #8b5cf6;
-    --text: #f1f5f9; --muted: #94a3b8; --muted2: #64748b;
-    --radius: 12px;
-  }
-  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f172a;--surface:#1e293b;--surface2:#273549;--border:#334155;
+  --accent:#3b82f6;--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--purple:#8b5cf6;
+  --text:#f1f5f9;--muted:#94a3b8;--r:12px;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-  /* ── LOGIN ── */
-  #loginWrap {
-    min-height: 100vh; display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(135deg, #0f172a 0%, #1a2d4a 50%, #0f172a 100%);
-  }
-  .login-box {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
-    padding: 44px 36px; width: 100%; max-width: 420px; text-align: center;
-    box-shadow: 0 30px 80px rgba(0,0,0,.6);
-  }
-  .login-box .emoji { font-size: 60px; margin-bottom: 12px; display: block; }
-  .login-box h1 { font-size: 24px; margin-bottom: 4px; }
-  .login-box .sub { color: var(--muted); font-size: 14px; margin-bottom: 32px; }
-  .login-box input {
-    width: 100%; padding: 14px 16px; background: #0f172a; border: 1.5px solid var(--border);
-    border-radius: 10px; color: var(--text); font-size: 16px; outline: none;
-    transition: border .2s; margin-bottom: 14px;
-  }
-  .login-box input:focus { border-color: var(--accent); }
-  .btn-login {
-    width: 100%; padding: 15px; background: linear-gradient(135deg, var(--accent-dark), var(--purple));
-    color: white; border: none; border-radius: 12px; font-weight: 800; font-size: 16px;
-    cursor: pointer; transition: opacity .2s;
-  }
-  .btn-login:hover { opacity: .9; }
-  .login-err {
-    background: #450a0a; border: 1px solid var(--red); color: #fca5a5;
-    border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-top: 12px; display: none;
-  }
+/* LOGIN */
+#loginWrap{
+  position:fixed;inset:0;
+  background:linear-gradient(135deg,#0f172a,#1a2d4a,#0f172a);
+  display:flex;align-items:center;justify-content:center;
+  z-index:999;
+}
+.login-box{
+  background:#1e293b;border:1px solid #334155;border-radius:20px;
+  padding:44px 36px;width:100%;max-width:400px;text-align:center;
+  box-shadow:0 30px 80px rgba(0,0,0,.6);margin:20px;
+}
+.login-box .icono{font-size:56px;margin-bottom:12px;display:block}
+.login-box h1{color:#f1f5f9;font-size:22px;margin-bottom:6px}
+.login-box p{color:#94a3b8;font-size:13px;margin-bottom:28px}
+.login-box input{
+  width:100%;padding:13px 15px;background:#0f172a;
+  border:1.5px solid #334155;border-radius:10px;
+  color:#f1f5f9;font-size:16px;outline:none;
+  margin-bottom:12px;display:block;
+}
+.login-box input:focus{border-color:#3b82f6}
+.btn-entrar{
+  width:100%;padding:14px;
+  background:linear-gradient(135deg,#1d4ed8,#7c3aed);
+  color:white;border:none;border-radius:12px;
+  font-weight:800;font-size:16px;cursor:pointer;
+}
+.login-err{
+  display:none;margin-top:12px;padding:10px 14px;
+  background:#450a0a;border:1px solid #ef4444;
+  color:#fca5a5;border-radius:8px;font-size:13px;
+}
 
-  /* ── PANEL PRINCIPAL ── */
-  #panelWrap { display: none; }
+/* PANEL */
+#panelWrap{display:none}
+header{
+  background:#1e293b;border-bottom:1px solid #334155;
+  padding:14px 24px;display:flex;align-items:center;gap:12px;
+  position:sticky;top:0;z-index:100;
+}
+header h1{font-size:17px;font-weight:800}
+.badge-sa{
+  background:linear-gradient(135deg,#1d4ed8,#7c3aed);
+  color:white;font-size:11px;font-weight:700;
+  padding:3px 10px;border-radius:99px;
+}
+.btn-salir{
+  margin-left:auto;padding:8px 16px;background:#1e293b;
+  border:1px solid #334155;color:#94a3b8;
+  border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;
+}
+.btn-salir:hover{border-color:#ef4444;color:#ef4444}
 
-  header {
-    background: var(--surface); border-bottom: 1px solid var(--border);
-    padding: 14px 28px; display: flex; align-items: center; gap: 14px;
-    position: sticky; top: 0; z-index: 100;
-  }
-  header .logo { font-size: 28px; }
-  header h1 { font-size: 18px; font-weight: 800; }
-  header .badge {
-    background: linear-gradient(135deg, var(--accent-dark), var(--purple));
-    color: white; font-size: 11px; font-weight: 700; padding: 3px 10px;
-    border-radius: 99px; letter-spacing: .5px;
-  }
-  header .btn-logout {
-    margin-left: auto; padding: 8px 18px; background: #1e293b;
-    border: 1px solid var(--border); color: var(--muted); border-radius: 8px;
-    font-size: 13px; font-weight: 700; cursor: pointer; transition: all .2s;
-  }
-  header .btn-logout:hover { border-color: var(--red); color: var(--red); }
+.container{max-width:1000px;margin:0 auto;padding:24px 16px}
 
-  .container { max-width: 1100px; margin: 0 auto; padding: 28px 20px; }
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px}
+.stat{
+  background:#1e293b;border:1px solid #334155;border-radius:12px;
+  padding:18px;text-align:center;
+}
+.stat .n{font-size:34px;font-weight:900;margin-bottom:4px}
+.stat .l{font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px}
 
-  /* ── STATS CARDS ── */
-  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 14px; margin-bottom: 28px; }
-  .stat-card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-    padding: 20px; text-align: center;
-  }
-  .stat-card .num { font-size: 36px; font-weight: 900; margin-bottom: 4px; }
-  .stat-card .lbl { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+/* SECCIÓN */
+.sec{background:#1e293b;border:1px solid #334155;border-radius:12px;margin-bottom:16px}
+.sec-hdr{
+  padding:14px 18px;border-bottom:1px solid #334155;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+}
+.sec-hdr h2{font-size:14px;font-weight:800}
+.sec-body{padding:16px}
 
-  /* ── SECCIÓN ── */
-  .section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 20px; }
-  .section-hdr {
-    padding: 16px 20px; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-  }
-  .section-hdr h2 { font-size: 15px; font-weight: 800; }
-  .section-body { padding: 20px; }
+/* USUARIO CARD */
+.u-card{
+  background:#273549;border:1px solid #334155;border-radius:10px;
+  padding:14px 16px;margin-bottom:10px;
+}
+.u-top{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.u-info{flex:1;min-width:150px}
+.u-name{font-size:15px;font-weight:800;margin-bottom:6px}
+.u-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:12px}
+.u-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 
-  /* ── TABLA USUARIOS ── */
-  .user-grid { display: flex; flex-direction: column; gap: 10px; }
-  .user-card {
-    background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
-    padding: 16px 18px; display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap;
-  }
-  .user-card .user-info { flex: 1; min-width: 160px; }
-  .user-card .user-name { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
-  .user-card .user-meta { font-size: 12px; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; }
-  .user-card .user-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-  .user-card .devices { margin-top: 10px; width: 100%; }
-  .device-row {
-    display: flex; align-items: center; gap: 10px; padding: 7px 10px;
-    background: var(--bg); border-radius: 8px; margin-top: 6px; flex-wrap: wrap;
-  }
-  .device-row .dev-name { font-size: 12px; flex: 1; }
-  .device-row .dev-date { font-size: 11px; color: var(--muted2); }
+/* DISPOSITIVOS */
+.devs{margin-top:10px;border-top:1px solid #334155;padding-top:10px}
+.dev-row{
+  display:flex;align-items:center;gap:8px;
+  background:#0f172a;border-radius:8px;padding:7px 10px;margin-bottom:6px;
+  flex-wrap:wrap;
+}
+.dev-name{font-size:12px;flex:1;color:#cbd5e1}
+.dev-fecha{font-size:11px;color:#64748b}
 
-  /* ── BADGES ── */
-  .tag {
-    display: inline-flex; align-items: center; gap: 4px;
-    font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px;
-  }
-  .tag-green  { background: #064e3b; color: #6ee7b7; }
-  .tag-red    { background: #450a0a; color: #fca5a5; }
-  .tag-blue   { background: #1e3a5f; color: #93c5fd; }
-  .tag-yellow { background: #451a03; color: #fcd34d; }
-  .tag-purple { background: #2e1065; color: #c4b5fd; }
+/* TAGS */
+.tag{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px}
+.tg{background:#064e3b;color:#6ee7b7}
+.tr{background:#450a0a;color:#fca5a5}
+.tb{background:#1e3a5f;color:#93c5fd}
+.ty{background:#451a03;color:#fcd34d}
+.tp{background:#2e1065;color:#c4b5fd}
 
-  /* ── BOTONES ── */
-  .btn {
-    padding: 8px 14px; border: none; border-radius: 8px; font-weight: 700;
-    font-size: 12px; cursor: pointer; transition: opacity .2s; white-space: nowrap;
-  }
-  .btn:hover { opacity: .85; }
-  .btn-primary { background: var(--accent); color: white; }
-  .btn-success { background: var(--green); color: white; }
-  .btn-danger  { background: var(--red); color: white; }
-  .btn-warning { background: var(--yellow); color: #1c1917; }
-  .btn-ghost   { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-  .btn-purple  { background: var(--purple); color: white; }
-  .btn-sm { padding: 5px 10px; font-size: 11px; }
+/* BOTONES */
+.btn{padding:7px 12px;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer}
+.b-pri{background:#3b82f6;color:white}
+.b-suc{background:#10b981;color:white}
+.b-dan{background:#ef4444;color:white}
+.b-war{background:#f59e0b;color:#1c1917}
+.b-gho{background:#273549;color:#f1f5f9;border:1px solid #334155}
+.b-pur{background:#8b5cf6;color:white}
+.b-sm{padding:4px 9px;font-size:11px}
 
-  /* ── MODAL ── */
-  .modal-bg {
-    position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 200;
-    display: flex; align-items: center; justify-content: center; padding: 20px;
-  }
-  .modal-bg.hidden { display: none; }
-  .modal {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
-    padding: 28px; width: 100%; max-width: 460px; box-shadow: 0 30px 80px rgba(0,0,0,.5);
-  }
-  .modal h3 { font-size: 17px; font-weight: 800; margin-bottom: 20px; }
-  .field { margin-bottom: 14px; }
-  .field label { display: block; font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 5px; }
-  .field input, .field select {
-    width: 100%; padding: 11px 13px; background: var(--bg); border: 1.5px solid var(--border);
-    border-radius: 8px; color: var(--text); font-size: 14px; outline: none; transition: border .2s;
-  }
-  .field input:focus, .field select:focus { border-color: var(--accent); }
-  .field select option { background: var(--surface); }
-  .modal-btns { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+/* MODAL */
+.modal-bg{
+  position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;
+  display:flex;align-items:center;justify-content:center;padding:16px;
+}
+.modal-bg.hidden{display:none}
+.modal{
+  background:#1e293b;border:1px solid #334155;border-radius:16px;
+  padding:24px;width:100%;max-width:440px;
+  box-shadow:0 30px 80px rgba(0,0,0,.5);
+}
+.modal h3{font-size:16px;font-weight:800;margin-bottom:18px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;color:#94a3b8;font-weight:600;margin-bottom:4px}
+.field input,.field select{
+  width:100%;padding:11px 12px;background:#0f172a;
+  border:1.5px solid #334155;border-radius:8px;
+  color:#f1f5f9;font-size:14px;outline:none;
+}
+.field input:focus,.field select:focus{border-color:#3b82f6}
+.field select option{background:#1e293b}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
 
-  /* ── TOAST ── */
-  #toast {
-    position: fixed; bottom: 28px; right: 28px; z-index: 999;
-    padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 700;
-    transform: translateY(80px); opacity: 0; transition: all .3s; max-width: 340px;
-  }
-  #toast.show { transform: translateY(0); opacity: 1; }
-  #toast.success { background: #064e3b; color: #6ee7b7; border: 1px solid #10b981; }
-  #toast.error   { background: #450a0a; color: #fca5a5; border: 1px solid #ef4444; }
-  #toast.info    { background: #1e3a5f; color: #93c5fd; border: 1px solid #3b82f6; }
+/* TOAST */
+#toast{
+  position:fixed;bottom:24px;right:24px;z-index:999;
+  padding:12px 18px;border-radius:10px;font-size:13px;font-weight:700;
+  transform:translateY(60px);opacity:0;transition:all .3s;max-width:320px;
+}
+#toast.show{transform:translateY(0);opacity:1}
+#toast.success{background:#064e3b;color:#6ee7b7;border:1px solid #10b981}
+#toast.error{background:#450a0a;color:#fca5a5;border:1px solid #ef4444}
+#toast.info{background:#1e3a5f;color:#93c5fd;border:1px solid #3b82f6}
 
-  /* ── LOADING ── */
-  .loading { text-align: center; padding: 40px; color: var(--muted); font-size: 14px; }
-  .empty { text-align: center; padding: 40px; color: var(--muted2); font-size: 14px; }
+.empty{text-align:center;padding:36px;color:#64748b;font-size:14px}
+.nota-p{font-size:11px;color:#94a3b8;font-style:italic;margin-top:4px}
 
-  /* ── NOTAS DE PAGO ── */
-  .nota-pago {
-    font-size: 11px; color: var(--muted); background: var(--bg);
-    border-radius: 6px; padding: 4px 10px; margin-top: 6px; font-style: italic;
-  }
-  .nota-pago.vencido { color: #fca5a5; background: #450a0a; }
-  .nota-pago.vigente { color: #6ee7b7; background: #064e3b; }
-
-  @media (max-width: 600px) {
-    header { padding: 12px 16px; }
-    .container { padding: 16px 12px; }
-    .user-card { padding: 14px; }
-    .modal { padding: 20px; }
-  }
+@media(max-width:600px){
+  header{padding:12px 14px}
+  .login-box{padding:32px 20px}
+  .modal{padding:18px}
+}
 </style>
 </head>
 <body>
 
-<!-- ══════════ LOGIN ══════════ -->
+<!-- LOGIN -->
 <div id="loginWrap">
   <div class="login-box">
-    <span class="emoji">🔐</span>
+    <span class="icono">🔐</span>
     <h1>Panel de Administración</h1>
-    <p class="sub">Farmacia POS — Acceso exclusivo del propietario</p>
+    <p>Farmacia POS · Solo propietario</p>
     <input id="masterPass" type="password" placeholder="Contraseña maestra"
       onkeydown="if(event.key==='Enter')adminLogin()">
-    <button class="btn-login" onclick="adminLogin()">Entrar al Panel →</button>
-    <div class="login-err" id="loginErr">Contraseña incorrecta</div>
+    <button class="btn-entrar" onclick="adminLogin()">Entrar al Panel →</button>
+    <div class="login-err" id="loginErr">❌ Contraseña incorrecta</div>
   </div>
 </div>
 
-<!-- ══════════ PANEL ══════════ -->
+<!-- PANEL -->
 <div id="panelWrap">
   <header>
-    <span class="logo">💊</span>
+    <span style="font-size:26px">💊</span>
     <h1>Panel de Administración</h1>
-    <span class="badge">SUPERADMIN</span>
-    <button class="btn-logout" onclick="adminLogout()">🚪 Salir</button>
+    <span class="badge-sa">SUPERADMIN</span>
+    <button class="btn-salir" onclick="adminLogout()">🚪 Salir</button>
   </header>
-
   <div class="container">
 
-    <!-- Stats -->
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="num" id="statTotal" style="color:var(--accent)">—</div>
-        <div class="lbl">Total usuarios</div>
-      </div>
-      <div class="stat-card">
-        <div class="num" id="statActivos" style="color:var(--green)">—</div>
-        <div class="lbl">Licencias activas</div>
-      </div>
-      <div class="stat-card">
-        <div class="num" id="statDisp" style="color:var(--yellow)">—</div>
-        <div class="lbl">Dispositivos conectados</div>
-      </div>
-      <div class="stat-card">
-        <div class="num" id="statInactivos" style="color:var(--red)">—</div>
-        <div class="lbl">Licencias inactivas</div>
-      </div>
+    <div class="stats">
+      <div class="stat"><div class="n" id="stTotal" style="color:#3b82f6">—</div><div class="l">Total usuarios</div></div>
+      <div class="stat"><div class="n" id="stActivos" style="color:#10b981">—</div><div class="l">Licencias activas</div></div>
+      <div class="stat"><div class="n" id="stDisp" style="color:#f59e0b">—</div><div class="l">Dispositivos conectados</div></div>
+      <div class="stat"><div class="n" id="stInact" style="color:#ef4444">—</div><div class="l">Licencias inactivas</div></div>
     </div>
 
-    <!-- Usuarios -->
-    <div class="section">
-      <div class="section-hdr">
+    <div class="sec">
+      <div class="sec-hdr">
         <h2>👥 Usuarios y Licencias</h2>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-ghost" onclick="recargarUsuarios()">🔄 Actualizar</button>
-          <button class="btn btn-primary" onclick="abrirModalCrear()">➕ Nuevo usuario</button>
+        <div style="display:flex;gap:8px">
+          <button class="btn b-gho" onclick="recargar()">🔄 Actualizar</button>
+          <button class="btn b-pri" onclick="abrirCrear()">➕ Nuevo usuario</button>
         </div>
       </div>
-      <div class="section-body">
-        <div id="userGrid" class="user-grid">
-          <div class="loading">⏳ Cargando usuarios...</div>
-        </div>
+      <div class="sec-body">
+        <div id="userGrid"><div class="empty">⏳ Conectando con Firebase...</div></div>
       </div>
     </div>
 
   </div>
 </div>
 
-<!-- ══════════ MODAL: CREAR / EDITAR USUARIO ══════════ -->
-<div id="modalUsuario" class="modal-bg hidden">
+<!-- MODAL -->
+<div id="modalU" class="modal-bg hidden">
   <div class="modal">
-    <h3 id="modalTitulo">➕ Nuevo usuario</h3>
+    <h3 id="mTitulo">➕ Nuevo usuario</h3>
     <div class="field">
-      <label>Usuario (sin espacios, minúsculas)</label>
-      <input id="mUser" type="text" placeholder="ej: cajero1" autocapitalize="none" autocorrect="off">
+      <label>Usuario (minúsculas, sin espacios)</label>
+      <input id="mUser" type="text" placeholder="ej: cajero1" autocapitalize="none">
     </div>
     <div class="field">
       <label>Contraseña</label>
@@ -275,25 +246,260 @@
         <option value="2">2 dispositivos (+$100 MXN/mes)</option>
         <option value="3">3 dispositivos (+$200 MXN/mes)</option>
         <option value="4">4 dispositivos (+$300 MXN/mes)</option>
-        <option value="5">5 dispositivos (+$400 MXN/mes)</option>
       </select>
     </div>
     <div class="field">
       <label>Nota de pago (opcional)</label>
-      <input id="mNota" type="text" placeholder="ej: Pagó ene-2025, vence feb-2025">
+      <input id="mNota" type="text" placeholder="ej: Pagó enero 2025, vence febrero">
     </div>
     <div class="modal-btns">
-      <button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button>
-      <button class="btn btn-primary" id="btnGuardar" onclick="guardarUsuario()">💾 Guardar</button>
+      <button class="btn b-gho" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn b-pri" id="btnG" onclick="guardar()">💾 Guardar</button>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div id="toast"></div>
 
 <script>
-const a0_0x5df91e=a0_0x44bd;(function(_0x3f6fda,_0xa5496f){const _0x516b32=a0_0x44bd,_0x34ef07=_0x3f6fda();while(!![]){try{const _0xcd155b=parseInt(_0x516b32(0x157))/0x1*(parseInt(_0x516b32(0x1da))/0x2)+parseInt(_0x516b32(0x148))/0x3+parseInt(_0x516b32(0x141))/0x4*(-parseInt(_0x516b32(0x1b5))/0x5)+-parseInt(_0x516b32(0x1dd))/0x6*(parseInt(_0x516b32(0x193))/0x7)+-parseInt(_0x516b32(0x1a6))/0x8*(parseInt(_0x516b32(0x153))/0x9)+parseInt(_0x516b32(0x1b3))/0xa+parseInt(_0x516b32(0x1c5))/0xb*(parseInt(_0x516b32(0x1c2))/0xc);if(_0xcd155b===_0xa5496f)break;else _0x34ef07['push'](_0x34ef07['shift']());}catch(_0x32ca40){_0x34ef07['push'](_0x34ef07['shift']());}}}(a0_0x317f,0xdc3d3));const MASTER_PASS=a0_0x5df91e(0x16f),fbCfg={'apiKey':a0_0x5df91e(0x1be),'authDomain':'brandy-skincare-pos.firebaseapp.com','projectId':a0_0x5df91e(0x13e),'storageBucket':a0_0x5df91e(0x197),'messagingSenderId':a0_0x5df91e(0x1b2),'appId':a0_0x5df91e(0x1d2)};function a0_0x44bd(_0x108e2c,_0x33a050){_0x108e2c=_0x108e2c-0x13a;const _0x317f93=a0_0x317f();let _0x44bdb8=_0x317f93[_0x108e2c];if(a0_0x44bd['UjVtqF']===undefined){var _0x44a820=function(_0x52cb8a){const _0xa6b8c3='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0x152eb4='',_0x429ad4='';for(let _0x2ed613=0x0,_0x3e0427,_0x43afdc,_0x6f480=0x0;_0x43afdc=_0x52cb8a['charAt'](_0x6f480++);~_0x43afdc&&(_0x3e0427=_0x2ed613%0x4?_0x3e0427*0x40+_0x43afdc:_0x43afdc,_0x2ed613++%0x4)?_0x152eb4+=String['fromCharCode'](0xff&_0x3e0427>>(-0x2*_0x2ed613&0x6)):0x0){_0x43afdc=_0xa6b8c3['indexOf'](_0x43afdc);}for(let _0x27451b=0x0,_0x5e995d=_0x152eb4['length'];_0x27451b<_0x5e995d;_0x27451b++){_0x429ad4+='%'+('00'+_0x152eb4['charCodeAt'](_0x27451b)['toString'](0x10))['slice'](-0x2);}return decodeURIComponent(_0x429ad4);};a0_0x44bd['wAaDHt']=_0x44a820,a0_0x44bd['ICRyVM']={},a0_0x44bd['UjVtqF']=!![];}const _0x259642=_0x317f93[0x0],_0x33cd00=_0x108e2c+_0x259642,_0x17c129=a0_0x44bd['ICRyVM'][_0x33cd00];return!_0x17c129?(_0x44bdb8=a0_0x44bd['wAaDHt'](_0x44bdb8),a0_0x44bd['ICRyVM'][_0x33cd00]=_0x44bdb8):_0x44bdb8=_0x17c129,_0x44bdb8;}let db=null,licencias=null,licUnsubscribe=null;try{firebase[a0_0x5df91e(0x188)](fbCfg),db=firebase[a0_0x5df91e(0x1c0)](),licencias=db[a0_0x5df91e(0x1cd)](a0_0x5df91e(0x143));}catch(a0_0x152eb4){console[a0_0x5df91e(0x1d1)](a0_0x5df91e(0x1de),a0_0x152eb4[a0_0x5df91e(0x13f)]);}function adminLogin(){const _0x335345=a0_0x5df91e,_0x429ad4=document[_0x335345(0x185)]('masterPass')['value'],_0x2ed613=document[_0x335345(0x185)](_0x335345(0x1a7));_0x429ad4===MASTER_PASS?(document[_0x335345(0x185)](_0x335345(0x18d))[_0x335345(0x147)][_0x335345(0x1a3)]=_0x335345(0x15d),document[_0x335345(0x185)](_0x335345(0x1cc))[_0x335345(0x147)][_0x335345(0x1a3)]='',sessionStorage[_0x335345(0x1a8)]('_admin_ok','1'),iniciarPanel()):(_0x2ed613[_0x335345(0x147)][_0x335345(0x1a3)]=_0x335345(0x18c),document[_0x335345(0x185)](_0x335345(0x1c8))['value']='',document['getElementById'](_0x335345(0x1c8))[_0x335345(0x1e0)](),setTimeout(()=>_0x2ed613[_0x335345(0x147)][_0x335345(0x1a3)]=_0x335345(0x15d),0xbb8));}function adminLogout(){const _0x1ff620=a0_0x5df91e;sessionStorage[_0x1ff620(0x192)](_0x1ff620(0x1df));if(licUnsubscribe)licUnsubscribe();document[_0x1ff620(0x185)](_0x1ff620(0x1cc))[_0x1ff620(0x147)]['display']=_0x1ff620(0x15d),document[_0x1ff620(0x185)]('loginWrap')[_0x1ff620(0x147)][_0x1ff620(0x1a3)]='',document[_0x1ff620(0x185)](_0x1ff620(0x1c8))[_0x1ff620(0x1d4)]='';}document[a0_0x5df91e(0x185)]('masterPass')[a0_0x5df91e(0x17e)]('keydown',_0x3e0427=>{const _0x2bab7b=a0_0x5df91e;if(_0x3e0427[_0x2bab7b(0x18e)]===_0x2bab7b(0x17b))adminLogin();});sessionStorage[a0_0x5df91e(0x183)](a0_0x5df91e(0x1df))==='1'&&(document[a0_0x5df91e(0x185)](a0_0x5df91e(0x18d))[a0_0x5df91e(0x147)][a0_0x5df91e(0x1a3)]=a0_0x5df91e(0x15d),document['getElementById']('panelWrap')[a0_0x5df91e(0x147)]['display']='',iniciarPanel());function iniciarPanel(){escucharUsuarios();}function escucharUsuarios(){const _0x4e11d0=a0_0x5df91e;if(!licencias){document[_0x4e11d0(0x185)](_0x4e11d0(0x166))[_0x4e11d0(0x179)]=_0x4e11d0(0x171);return;}if(licUnsubscribe)licUnsubscribe();licUnsubscribe=licencias['onSnapshot'](_0x43afdc=>{const _0x22d749=_0x4e11d0,_0x6f480=[];_0x43afdc[_0x22d749(0x1dc)](_0x27451b=>_0x6f480['push']({'id':_0x27451b['id'],..._0x27451b[_0x22d749(0x17c)]()})),renderUsuarios(_0x6f480),actualizarStats(_0x6f480);},_0x5e995d=>{const _0x5dc492=_0x4e11d0;document[_0x5dc492(0x185)](_0x5dc492(0x166))[_0x5dc492(0x179)]=_0x5dc492(0x195)+_0x5e995d[_0x5dc492(0x13f)]+_0x5dc492(0x14d);});}function a0_0x317f(){const _0x1f45a7=['pc9ZCgfUpGOGicaGica8l2rPDJ4kicaGicaG','zMLYzxn0B3jL','Dg9mB2nHBgveyxrLu3rYAw5N','mJKXoteYuMjgs1Pk','cIaGicaGidXIDxr0B24Gy2XHC3m9iMj0BIbIDg4TChvYCgXLigj0BI1ZBsiGB25JBgLJAZ0Iy2fTyMLHCLjVBfjHCgLKBYGN','jYWGzMfSC2uPiJ7WN5s0ierLC2fJDgL2yxi8l2j1DhrVBJ4','nJa1vK1ABKzh','C3rHDefJDgL2B3m','jNf1B3q7','BwfZDgvYugfZCW','zxjYB3i','BvvZzxi','8j+AQYbeAxnWB3nPDgL2BYbLEhb1BhnHzg8G4OcuihnLC2NdS24Gy2vYCMfKysbLBIb0AwvTCg8GCMvHBa','CgfUzwXxCMfW','y29SBgvJDgLVBG','C2v0','BM9TyNjL','pgj1DhrVBIbJBgfZCZ0IyNrUigj0BI1ZDwnJzxnZigj0BI1ZBsiGB25JBgLJAZ0IDg9Nz2XLtgLJzw5JAweOjW','D2fYBG','mtO2nJe1nZi3ntm1mdu6D2vIoMq0mta0ntu5mZC5yZKXodLIztmYmJa','cIaGicaGia','DMfSDwu','zgLZywjSzwq','zMLSDgvY','iJ8kcLnLignLCNjHCSoHihn1ihnLC2NdS24GAw5TzwrPyxrHBwvUDguU','pc9KAxy+cIaGicaGicaGica8zgL2ignSyxnZpsjKzxyTzgf0zsi+','Dg9vChbLCKnHC2u','mJu2otuZmM5bsgv2ta','8j+rKsdIHPiGqwrTAw4','zM9YrwfJAa','nNjcCLLxsW','rMLYzwjHC2u6','x2fKBwLUx29R','zM9JDxm','phnWyw4Gy2XHC3m9iNrHzYa','jYWGjW','iJ8kcKvZDgeGywnJACoZBIbUBYbZzsbWDwvKzsbKzxnOywnLCI4','8j+sVIbdCMvHCIb1C3vHCMLV','BvjVBa','CMvTB3zL','yNjHBMr5lxnRAw5JyxjLlxbVCW','BwvZC2fNzq','zgvSzxrL','mta0mtK2uunIq0TL','y2XHC3noyw1L','BgLJzw5JAwfZ','rMLLBgrwywX1zq','y2HHCKf0','BgvUz3rO','C3r5Bgu','mZm4otK4nuHNAuLWza','r3vHCMrHBMrVlI4U','y3rYBeTLEq','zgvZywn0AxzHzge','CMvWBgfJzq','pc9KAxy+','cIaGicaGidWVyNv0Dg9UpGOGicaGica8yNv0Dg9UignSyxnZpsjIDg4GyNrUlwrHBMDLCIbIDg4TC20Iig9Uy2XPy2S9iMvSAw1PBMfYvxn1yxjPBYGN','zxHPC3rZ','z2v0','BvbHC3m','CMvKDwnL','mJDwsKDOBvm','BwfW','zgvZywn0AxzHCG','4P2mifLHigv4Axn0zsb1BIb1C3vHCMLVignVBIbLC2uGBM9TyNjL','mwHewvzKtq','jYKIpVcFL5hVUi88l2j1DhrVBJ4kicaGidWVzgL2pGOGidWVzgL2pG','phnWyw4Gy2XHC3m9iNrHzYb0ywCTCMvKiJ7WN5s0ieLUywn0AxzHpc9ZCgfUpG','Dg9HC3q','4P2mievYCM9YoIa','DxbKyxrL','BM9Uzq','rxnJCMLIzsb1BIbUB21ICMuGzguGDxn1yxjPBW','4PQG77Ipimk/ruXjtuLoqviGzwWGDxn1yxjPBYaI','jYWGDhj1zsKIpVcFN6iGqwn0AxzHCJWVyNv0Dg9UpG','A2v5zg93BG','zg9J','8j+uHcbby3r1ywXPEMfUzg8UlI4','iJ4kicaGidXKAxyGC3r5Bgu9iMzVBNqTC2L6ztOZnNb4o2XPBMuTAgvPz2H0oJeIpVcFKAq8l2rPDJ4kicaGidXKAxyGy2XHC3m9iNvZzxiTAw5MBYi+cIaGicaGidXKAxyGy2XHC3m9iNvZzxiTBMfTzsi+','cIaGica8l2rPDJ4','DxnLCKDYAwq','zMvJAge','iIbHihjVBca','ieXPy2vUy2LHia','zgLZCg9ZAxrPDM9Zqwn0AxzVCW','ChjLDMvUDerLzMf1Bhq','C3rHDfrVDgfS','y2XHC3nmAxn0','C3rHDerPC3a','sMfYCMfZmJaWoq','C3rHDeLUywn0AxzVCW','pgrPDIbJBgfZCZ0Izw1WDhKIpUkAOo+4JYbtAw4Gy29UzxHPW7nUigeGrMLYzwjHC2u8l2rPDJ4','BM90yvbHz28','Aw5MBW','vxn1yxjPBYbUBYbLBMnVBNrYywrV','ywrTAw4','phnWyw4Gy2XHC3m9iNrHzYb0ywCTyMX1zsi+8j+BKIbdywPLCM88l3nWyw4+','CgfZC3DVCMq','BurPC3a','Aw5Uzxjive1m','jYWG','rw50zxi','zgf0yq','phnWyw4Gy2XHC3m9iNrHzYb0ywCTEwvSBg93iJ7WN5griefKBwLUpc9ZCgfUpG','ywrKrxzLBNrmAxn0zw5LCG','pgrPDIbZDhLSzt0IzM9UDc1ZAxPLoJeYChG7y29SB3i6DMfYkc0TBxv0zwqYktTTyxjNAw4TDg9WoJHWEci+u2LUigrPC3bVC2L0AxzVCYbJB25Ly3rHzg9Zpc9KAxy+','ksi+cIaGicaGicaGicaGipcFMQSGrxHWDwXZyxikicaGicaGicaGidWVyNv0Dg9UpGOGicaGicaGidWVzgL2pG','4PYp77IpievKAxrHCJOG','AM9PBG','z2v0sxrLBq','igXHigXPy2vUy2LHigrLici','z2v0rwXLBwvUDej5swq','Bu5VDge','rJeY','Aw5PDgLHBgL6zufWCa','C29YDa','DgfNlwDYzwvU','Aw5JBhvKzxm','yMXVy2S','Bg9NAw5xCMfW','A2v5','Bwv0yuTLEq','4PYfifvZDwfYAw8Gy3jLywrVoIa','pc9KAxy+cIaGicaGicaGica8yNv0Dg9UignSyxnZpsjIDg4GyNrUlwrHBMDLCIbIDg4TC20Iig9Uy2XPy2S9iMv4ChvSC2fYrgLZCg9ZAxrPDM8OjW','CMvTB3zLsxrLBq','odu3nZC3owrnCwfhyW','pc9ZCgfUpG','pgrPDIbJBgfZCZ0Izw1WDhKIpUkDJcbfCNjVCJOG','C3vJy2vZCW','yNjHBMr5lxnRAw5JyxjLlxbVCY5MAxjLyMfZzxn0B3jHz2uUyxbW','cIaGpgrPDIbJBgfZCZ0IDxnLCI1JyxjKiIbPzd0Iy2fYzc0','cIaGicaGicaGpgrPDIbJBgfZCZ0Izgv2AwnLlxjVDYi+cIaGicaGicaGica8C3bHBIbZDhLSzt0IzM9UDc1ZAxPLoJe2ChGIpVcFK7e8l3nWyw4+cIaGicaGicaGica8zgL2ignSyxnZpsjKzxyTBMfTzsi+','DgfNlxjLza','8j+sVIbhDwfYzgfYignHBwjPB3m','Dg9ju09tDhjPBMC','jYKIpUkCJ++4JYbfzgL0yxi8l2j1DhrVBJ4kicaGicaG','phnWyw4Gy2XHC3m9iNrHzYb0ywCTz3jLzw4IpVcFN6iGqwn0AxzHpc9ZCgfUpG','zxmTtvG','ifjVBcbJyw1IAwfKBYbHia','pgrPDIbJBgfZCZ0Izw1WDhKIpLnPBIb1C3vHCMLVCYbYzwDPC3rYywrVCY4Gq3jLysbLBcbWCMLTzxjViokELtWVzgL2pG','ywn0AxzH','zgLZCgXHEq','CM9S','Bw9KywXuAxr1Bg8','mZqXotq2ngTXyKz1sG','Bg9NAw5fCNi','C2v0sxrLBq','8j+xKE+4JYbvC3vHCMLVigvSAw1PBMfKBZOG','Bw9KywXvC3vHCMLV','ywn0AxzHzge','4PYfifvZDwfYAw8Gywn0DwfSAxPHzg86ia','pgj1DhrVBIbJBgfZCZ0IyNrUigj0BI13yxjUAw5Nigj0BI1ZBsiGB25JBgLJAZ0IDg9Nz2XLtgLJzw5JAweOjW','cIaGica8zgL2ignSyxnZpsjKzxzPy2vZiJ4kicaGicaGpgrPDIbZDhLSzt0IzM9UDc1ZAxPLoJeXChG7y29SB3i6DMfYkc0TBxv0zwqPo21HCMDPBI1IB3r0B206nhb4o3rLEhqTDhjHBNnMB3jToNvWCgvYy2fZztTSzxr0zxiTC3bHy2LUzZOUnxb4iJ4kicaGicaGicbeAxnWB3nPDgL2B3mGy29Uzwn0ywrVCWOGicaGica8l2rPDJ4kicaGicaG','Dg9mB3DLCKnHC2u','AgLKzgvU','ywn0AxzHCG','nJyXntCYnZuZnta1','odu1mZu4mhDQtKnVAq','C3rYAw5NAwz5','mJmWEM5NALHf','Dgv4DenVBNrLBNq','C2HVDYa','4P6vie51zxzVihvZDwfYAw8','y29UDgv4Dg1LBNu','cIaGica8l2rPDJ4kicaGidXKAxyGy2XHC3m9iNvZzxiTywn0Aw9UCYi+cIaGicaGidXIDxr0B24Gy2XHC3m9iMj0BIbIDg4Tz2HVC3qGyNrUlxnTiIb0AxrSzt0IrwrPDgfYiIbVBMnSAwnRpsjHyNjPCK1VzgfSrwrPDgfYkcC','yNrUr3vHCMrHCG','DhjPBq','y2fQzxjV','quL6yvn5qxvkrNPlrNGXrJm1zI1VrdLYBLLVmdfemKHkq0D0x0m4'];a0_0x317f=function(){return _0x1f45a7;};return a0_0x317f();}function recargarUsuarios(){const _0x4f44af=a0_0x5df91e;escucharUsuarios(),toast(_0x4f44af(0x163),_0x4f44af(0x173));}function actualizarStats(_0x330d89){const _0x58e852=a0_0x5df91e,_0x50d26a=_0x330d89[_0x58e852(0x1d6)](_0xacabca=>_0xacabca[_0x58e852(0x1a2)])[_0x58e852(0x146)],_0x138e96=_0x330d89[_0x58e852(0x1d6)](_0x3728c4=>!_0x3728c4[_0x58e852(0x1a2)])[_0x58e852(0x146)],_0x510496=_0x330d89[_0x58e852(0x152)]((_0x1e3150,_0x504821)=>_0x1e3150+(_0x504821['dispositivosActivos']?.[_0x58e852(0x146)]||0x0),0x0);document['getElementById'](_0x58e852(0x16c))[_0x58e852(0x1b6)]=_0x330d89['length'],document[_0x58e852(0x185)](_0x58e852(0x1c6))['textContent']=_0x50d26a,document['getElementById'](_0x58e852(0x16e))[_0x58e852(0x1b6)]=_0x510496,document[_0x58e852(0x185)](_0x58e852(0x170))['textContent']=_0x138e96;}function renderUsuarios(_0x55cf80){const _0x7d134a=a0_0x5df91e,_0x302718=document[_0x7d134a(0x185)](_0x7d134a(0x166));if(!_0x55cf80[_0x7d134a(0x146)]){_0x302718[_0x7d134a(0x179)]=_0x7d134a(0x1a1);return;}const _0x2cfea4=[..._0x55cf80][_0x7d134a(0x189)]((_0x5d5671,_0x5f0c1)=>_0x5d5671['id']['localeCompare'](_0x5f0c1['id']));_0x302718[_0x7d134a(0x179)]=_0x2cfea4[_0x7d134a(0x154)](_0x3e30e1=>buildUserCard(_0x3e30e1))[_0x7d134a(0x182)]('');}function buildUserCard(_0x367970){const _0x497c52=a0_0x5df91e,_0x4f808f=_0x367970[_0x497c52(0x16a)]||[],_0x4f7426=_0x367970['dispositivosPermitidos']||0x1,_0x20ec70=_0x367970[_0x497c52(0x1a4)]===_0x497c52(0x175)?_0x497c52(0x17d):_0x497c52(0x176),_0x5df287=_0x367970[_0x497c52(0x1a2)]?_0x497c52(0x19e):_0x497c52(0x159),_0x2e9f38=_0x497c52(0x1e1)+(_0x4f808f[_0x497c52(0x146)]>=_0x4f7426?_0x497c52(0x19a):_0x497c52(0x18a))+'\x22>📱\x20'+_0x4f808f[_0x497c52(0x146)]+'/'+_0x4f7426+_0x497c52(0x194),_0x56a692=_0x4f808f[_0x497c52(0x146)]?_0x497c52(0x1ae)+_0x4f808f[_0x497c52(0x154)](_0x561328=>_0x497c52(0x199)+(_0x561328[_0x497c52(0x1cf)]||'Dispositivo')+_0x497c52(0x1d8)+(_0x561328['fecha']?new Date(_0x561328[_0x497c52(0x167)])[_0x497c52(0x1c1)](_0x497c52(0x19f)):'')+_0x497c52(0x191)+_0x367970['id']+_0x497c52(0x17a)+JSON[_0x497c52(0x1b4)](_0x561328)[_0x497c52(0x14c)](/"/g,_0x497c52(0x1c7))+_0x497c52(0x180))[_0x497c52(0x182)]('')+_0x497c52(0x165):_0x497c52(0x17f),_0x4943a7=_0x367970[_0x497c52(0x172)]?'<div\x20class=\x22nota-pago\x22>💰\x20'+_0x367970[_0x497c52(0x172)]+_0x497c52(0x14d):'';return _0x497c52(0x198)+_0x367970['id']+_0x497c52(0x164)+_0x367970['id']+'</div>\x0a\x20\x20\x20\x20\x20\x20<div\x20class=\x22user-meta\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20'+_0x20ec70+'\x20'+_0x5df287+'\x20'+_0x2e9f38+'\x0a\x20\x20\x20\x20\x20\x20\x20\x20<span\x20style=\x22color:var(--muted2);font-size:11px\x22>🔑\x20'+(_0x367970['password']||'—')+_0x497c52(0x1bf)+_0x4943a7+_0x497c52(0x1d3)+_0x56a692+_0x497c52(0x1ba)+_0x367970['id']+_0x497c52(0x19d)+(_0x367970[_0x497c52(0x1a2)]?_0x497c52(0x1ad)+_0x367970['id']+_0x497c52(0x1c4):_0x497c52(0x1d0)+_0x367970['id']+_0x497c52(0x160))+_0x497c52(0x1c3)+_0x367970['id']+_0x497c52(0x1e2)+(_0x367970[_0x497c52(0x1a4)]||'cajero')+'\x27)\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20'+(_0x367970[_0x497c52(0x1a4)]===_0x497c52(0x175)?'🛒\x20→\x20Cajero':_0x497c52(0x1db))+_0x497c52(0x14e)+_0x367970['id']+_0x497c52(0x158);}async function toggleLicencia(_0x592af4,_0x35c72b){const _0x1aba42=a0_0x5df91e,_0x3b7ccb=_0x35c72b?_0x1aba42(0x1b1):_0x1aba42(0x155);if(!confirm('¿'+(_0x3b7ccb[_0x1aba42(0x145)](0x0)[_0x1aba42(0x1d9)]()+_0x3b7ccb['slice'](0x1))+_0x1aba42(0x184)+_0x592af4+'\x22?'))return;try{await licencias[_0x1aba42(0x162)](_0x592af4)[_0x1aba42(0x15c)]({'activa':_0x35c72b}),toast((_0x35c72b?'🟢':'🔴')+_0x1aba42(0x169)+(_0x35c72b?_0x1aba42(0x1ab):_0x1aba42(0x14b))+':\x20'+_0x592af4,_0x35c72b?_0x1aba42(0x196):_0x1aba42(0x1c9));}catch(_0x2fac5a){toast(_0x1aba42(0x15b)+_0x2fac5a[_0x1aba42(0x13f)],'error');}}async function cambiarRolRapido(_0x26c309,_0x54ef97){const _0x41c8eb=a0_0x5df91e,_0x4c48d0=_0x54ef97===_0x41c8eb(0x175)?_0x41c8eb(0x1bd):_0x41c8eb(0x175),_0x2fafdb=_0x4c48d0===_0x41c8eb(0x175)?'👑':'🛒';if(!confirm('¿Cambiar\x20\x22'+_0x26c309+_0x41c8eb(0x168)+_0x2fafdb+'\x20'+_0x4c48d0+'?'))return;try{await licencias['doc'](_0x26c309)[_0x41c8eb(0x15c)]({'rol':_0x4c48d0}),toast(_0x2fafdb+_0x41c8eb(0x1a0)+_0x4c48d0+':\x20'+_0x26c309,'success');}catch(_0x41a1d9){toast(_0x41c8eb(0x15b)+_0x41a1d9[_0x41c8eb(0x13f)],_0x41c8eb(0x1c9));}}async function expulsarDispositivo(_0x3731bb,_0x44e45f){const _0x176cc4=a0_0x5df91e;if(!confirm('¿Expulsar\x20el\x20dispositivo\x20\x22'+(_0x44e45f[_0x176cc4(0x1cf)]||'Dispositivo')+'\x22\x20de\x20\x22'+_0x3731bb+_0x176cc4(0x1d7)))return;try{await licencias[_0x176cc4(0x162)](_0x3731bb)['update']({'dispositivosActivos':firebase[_0x176cc4(0x1c0)][_0x176cc4(0x144)]['arrayRemove'](_0x44e45f)}),toast(_0x176cc4(0x1cb),'success');}catch(_0x3e1462){toast('❌\x20Error:\x20'+_0x3e1462[_0x176cc4(0x13f)],_0x176cc4(0x1c9));}}async function expulsarTodosDisp(_0x4c91ba){const _0x4b8bff=a0_0x5df91e;if(!confirm('¿Expulsar\x20TODOS\x20los\x20dispositivos\x20de\x20\x22'+_0x4c91ba+'\x22?\x0a\x0aTodos\x20perderán\x20la\x20sesión\x20inmediatamente.'))return;try{await licencias[_0x4b8bff(0x162)](_0x4c91ba)[_0x4b8bff(0x15c)]({'dispositivosActivos':[]}),toast('🚫\x20Todos\x20los\x20dispositivos\x20expulsados',_0x4b8bff(0x196));}catch(_0x2f6469){toast('❌\x20Error:\x20'+_0x2f6469[_0x4b8bff(0x13f)],_0x4b8bff(0x1c9));}}async function eliminarUsuario(_0x27fe98){const _0x2385e7=a0_0x5df91e;if(!confirm(_0x2385e7(0x15f)+_0x27fe98+_0x2385e7(0x13a)))return;if(!confirm('Confirma\x20de\x20nuevo:\x20¿eliminar\x20permanentemente\x20\x22'+_0x27fe98+'\x22?'))return;try{await licencias['doc'](_0x27fe98)[_0x2385e7(0x140)](),toast(_0x2385e7(0x1a9)+_0x27fe98,_0x2385e7(0x173));}catch(_0x2efc2d){toast('❌\x20Error:\x20'+_0x2efc2d['message'],_0x2385e7(0x1c9));}}let _editMode=![],_editId=null;function abrirModalCrear(){const _0x36ecf9=a0_0x5df91e;_editMode=![],_editId=null,document[_0x36ecf9(0x185)](_0x36ecf9(0x1a5))[_0x36ecf9(0x1b6)]=_0x36ecf9(0x1b8),document[_0x36ecf9(0x185)](_0x36ecf9(0x1ca))['value']='',document[_0x36ecf9(0x185)](_0x36ecf9(0x151))[_0x36ecf9(0x1d4)]='',document[_0x36ecf9(0x185)](_0x36ecf9(0x13c))[_0x36ecf9(0x1d4)]=_0x36ecf9(0x1bd),document['getElementById'](_0x36ecf9(0x178))[_0x36ecf9(0x1d4)]='1',document[_0x36ecf9(0x185)]('mNota')[_0x36ecf9(0x1d4)]='',document[_0x36ecf9(0x185)](_0x36ecf9(0x1ca))[_0x36ecf9(0x1d5)]=![],document[_0x36ecf9(0x185)](_0x36ecf9(0x1bb))[_0x36ecf9(0x1b6)]='💾\x20Crear\x20usuario',document[_0x36ecf9(0x185)](_0x36ecf9(0x1aa))['classList'][_0x36ecf9(0x13d)]('hidden'),setTimeout(()=>document['getElementById']('mUser')[_0x36ecf9(0x1e0)](),0x64);}async function abrirModalEditar(_0x29fd74){const _0x143a9f=a0_0x5df91e;_editMode=!![],_editId=_0x29fd74,document[_0x143a9f(0x185)](_0x143a9f(0x1a5))[_0x143a9f(0x1b6)]=_0x143a9f(0x181)+_0x29fd74,document['getElementById'](_0x143a9f(0x1bb))[_0x143a9f(0x1b6)]=_0x143a9f(0x19b),document[_0x143a9f(0x185)](_0x143a9f(0x1ca))[_0x143a9f(0x1d5)]=!![];try{const _0x4171aa=await licencias[_0x143a9f(0x162)](_0x29fd74)[_0x143a9f(0x150)]();if(!_0x4171aa[_0x143a9f(0x14f)]){toast(_0x143a9f(0x174),_0x143a9f(0x1c9));return;}const _0x488a37=_0x4171aa[_0x143a9f(0x17c)]();document[_0x143a9f(0x185)](_0x143a9f(0x1ca))[_0x143a9f(0x1d4)]=_0x29fd74,document['getElementById'](_0x143a9f(0x151))['value']=_0x488a37[_0x143a9f(0x177)]||'',document[_0x143a9f(0x185)](_0x143a9f(0x13c))[_0x143a9f(0x1d4)]=_0x488a37[_0x143a9f(0x1a4)]||_0x143a9f(0x1bd),document['getElementById'](_0x143a9f(0x178))[_0x143a9f(0x1d4)]=String(_0x488a37['dispositivosPermitidos']||0x1),document[_0x143a9f(0x185)](_0x143a9f(0x186))['value']=_0x488a37[_0x143a9f(0x172)]||'',document[_0x143a9f(0x185)](_0x143a9f(0x1aa))[_0x143a9f(0x16d)][_0x143a9f(0x13d)](_0x143a9f(0x1b0));}catch(_0x43f951){toast(_0x143a9f(0x15b)+_0x43f951['message'],_0x143a9f(0x1c9));}}function cerrarModal(){const _0x4eece2=a0_0x5df91e;document[_0x4eece2(0x185)](_0x4eece2(0x1aa))['classList']['add'](_0x4eece2(0x1b0));}async function guardarUsuario(){const _0x319cf3=a0_0x5df91e,_0x5b24f0=document[_0x319cf3(0x185)](_0x319cf3(0x1ca))['value'][_0x319cf3(0x1bc)]()[_0x319cf3(0x1af)]()['replace'](/\s+/g,''),_0x6553ea=document[_0x319cf3(0x185)](_0x319cf3(0x151))[_0x319cf3(0x1d4)][_0x319cf3(0x1bc)](),_0x1758b3=document[_0x319cf3(0x185)](_0x319cf3(0x13c))[_0x319cf3(0x1d4)],_0x1f66a1=parseInt(document[_0x319cf3(0x185)](_0x319cf3(0x178))[_0x319cf3(0x1d4)]),_0x6c7bbb=document[_0x319cf3(0x185)](_0x319cf3(0x186))[_0x319cf3(0x1d4)]['trim']();if(!_0x5b24f0){toast(_0x319cf3(0x15e),'error');return;}if(!_0x6553ea){toast('Escribe\x20una\x20contraseña','error');return;}const _0x372fdf=document[_0x319cf3(0x185)](_0x319cf3(0x1bb));_0x372fdf[_0x319cf3(0x1d5)]=!![],_0x372fdf[_0x319cf3(0x1b6)]=_0x319cf3(0x149);try{if(_editMode){const _0x327e7a={'password':_0x6553ea,'rol':_0x1758b3,'dispositivosPermitidos':_0x1f66a1};if(_0x6c7bbb!=='')_0x327e7a['notaPago']=_0x6c7bbb;await licencias['doc'](_editId)[_0x319cf3(0x15c)](_0x327e7a),toast(_0x319cf3(0x1ac)+_editId,_0x319cf3(0x196));}else{const _0x4b8813=await licencias[_0x319cf3(0x162)](_0x5b24f0)[_0x319cf3(0x150)]();if(_0x4b8813['exists']){toast(_0x319cf3(0x156),'error'),_0x372fdf[_0x319cf3(0x1d5)]=![],_0x372fdf[_0x319cf3(0x1b6)]='💾\x20Crear\x20usuario';return;}await licencias[_0x319cf3(0x162)](_0x5b24f0)[_0x319cf3(0x1ce)]({'activa':!![],'password':_0x6553ea,'rol':_0x1758b3,'dispositivosPermitidos':_0x1f66a1,'dispositivosActivos':[],'notaPago':_0x6c7bbb,'creadoEn':new Date()[_0x319cf3(0x19c)]()}),toast(_0x319cf3(0x190)+_0x5b24f0,_0x319cf3(0x196));}cerrarModal();}catch(_0x3ce852){toast('❌\x20Error:\x20'+_0x3ce852['message'],_0x319cf3(0x1c9));}_0x372fdf['disabled']=![],_0x372fdf[_0x319cf3(0x1b6)]=_editMode?_0x319cf3(0x19b):_0x319cf3(0x13b);}let _toastT;function toast(_0x1a2527,_0x22cce1=a0_0x5df91e(0x196)){const _0x167281=a0_0x5df91e,_0x14443c=document[_0x167281(0x185)](_0x167281(0x15a));_0x14443c[_0x167281(0x1b6)]=_0x1a2527,_0x14443c[_0x167281(0x142)]=_0x167281(0x1b7)+_0x22cce1,clearTimeout(_toastT),_toastT=setTimeout(()=>_0x14443c[_0x167281(0x142)]='',0xdac);}document[a0_0x5df91e(0x17e)](a0_0x5df91e(0x1b9),_0x3415a=>_0x3415a[a0_0x5df91e(0x16b)]()),document[a0_0x5df91e(0x17e)](a0_0x5df91e(0x161),_0x1e8bd7=>{const _0x573845=a0_0x5df91e,_0x237f2b=_0x1e8bd7[_0x573845(0x14a)]||_0x1e8bd7[_0x573845(0x18f)];if(_0x1e8bd7[_0x573845(0x18e)]===_0x573845(0x187)){_0x1e8bd7[_0x573845(0x16b)]();return;}if(_0x237f2b&&_0x1e8bd7['shiftKey']&&['I','J','C','K'][_0x573845(0x18b)](_0x1e8bd7[_0x573845(0x18e)][_0x573845(0x1d9)]())){_0x1e8bd7[_0x573845(0x16b)]();return;}if(_0x237f2b&&['U','S'][_0x573845(0x18b)](_0x1e8bd7['key'][_0x573845(0x1d9)]())){_0x1e8bd7['preventDefault']();return;}},!![]);
+// ── CONTRASEÑA MAESTRA ────────────────────────────────────────────────────────
+const MP = 'Jarras2009';
+
+// ── FIREBASE ──────────────────────────────────────────────────────────────────
+const fbCfg = {
+  apiKey:            "AIzaSyAuJFzKFx1F35f-oD9rnYo01D2HJCGt_C8",
+  authDomain:        "brandy-skincare-pos.firebaseapp.com",
+  projectId:         "brandy-skincare-pos",
+  storageBucket:     "brandy-skincare-pos.firebasestorage.app",
+  messagingSenderId: "661572753505",
+  appId:             "1:661572753505:web:d4104559379c9189be3220"
+};
+
+let db = null, lic = null, unsub = null;
+
+window.addEventListener('load', () => {
+  try {
+    firebase.initializeApp(fbCfg);
+    db  = firebase.firestore();
+    lic = db.collection('licencias');
+  } catch(e) { console.warn('Firebase:', e.message); }
+
+  // Sesión activa
+  if (sessionStorage.getItem('_aok') === '1') {
+    mostrarPanel();
+  }
+});
+
+// ── LOGIN ─────────────────────────────────────────────────────────────────────
+function adminLogin() {
+  const p = document.getElementById('masterPass').value;
+  if (p === MP) {
+    sessionStorage.setItem('_aok', '1');
+    mostrarPanel();
+  } else {
+    const err = document.getElementById('loginErr');
+    err.style.display = 'block';
+    document.getElementById('masterPass').value = '';
+    setTimeout(() => err.style.display = 'none', 3000);
+  }
+}
+
+function mostrarPanel() {
+  document.getElementById('loginWrap').style.display = 'none';
+  document.getElementById('panelWrap').style.display = '';
+  escuchar();
+}
+
+function adminLogout() {
+  sessionStorage.removeItem('_aok');
+  if (unsub) unsub();
+  document.getElementById('panelWrap').style.display = 'none';
+  document.getElementById('loginWrap').style.display = 'flex';
+  document.getElementById('masterPass').value = '';
+}
+
+// ── ESCUCHAR USUARIOS ─────────────────────────────────────────────────────────
+function escuchar() {
+  if (!lic) {
+    document.getElementById('userGrid').innerHTML = '<div class="empty">⚠️ Sin conexión a Firebase</div>';
+    return;
+  }
+  if (unsub) unsub();
+  unsub = lic.onSnapshot(snap => {
+    const docs = [];
+    snap.forEach(d => docs.push({ id: d.id, ...d.data() }));
+    renderStats(docs);
+    renderUsuarios(docs);
+  }, e => {
+    document.getElementById('userGrid').innerHTML = `<div class="empty">❌ Error Firebase: ${e.message}</div>`;
+  });
+}
+
+function recargar() { escuchar(); toast('🔄 Actualizando...','info'); }
+
+function renderStats(docs) {
+  document.getElementById('stTotal').textContent   = docs.length;
+  document.getElementById('stActivos').textContent = docs.filter(d => d.activa).length;
+  document.getElementById('stInact').textContent   = docs.filter(d => !d.activa).length;
+  document.getElementById('stDisp').textContent    = docs.reduce((a,d) => a+(d.dispositivosActivos?.length||0),0);
+}
+
+function renderUsuarios(docs) {
+  const g = document.getElementById('userGrid');
+  if (!docs.length) { g.innerHTML = '<div class="empty">Sin usuarios. Crea el primero ➕</div>'; return; }
+  g.innerHTML = [...docs].sort((a,b)=>a.id.localeCompare(b.id)).map(u => cardHTML(u)).join('');
+}
+
+function cardHTML(u) {
+  const activos   = u.dispositivosActivos || [];
+  const permitidos = u.dispositivosPermitidos || 1;
+  const rolTag  = u.rol==='admin' ? '<span class="tag ty">👑 Admin</span>' : '<span class="tag tb">🛒 Cajero</span>';
+  const estTag  = u.activa ? '<span class="tag tg">🟢 Activa</span>' : '<span class="tag tr">🔴 Inactiva</span>';
+  const dispTag = `<span class="tag ${activos.length>=permitidos?'tr':'tg'}">📱 ${activos.length}/${permitidos}</span>`;
+  const notaHTML = u.notaPago ? `<div class="nota-p">💰 ${u.notaPago}</div>` : '';
+
+  const devsHTML = activos.length ? `
+    <div class="devs">
+      <div style="font-size:11px;color:#64748b;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Dispositivos activos</div>
+      ${activos.map(d => `
+        <div class="dev-row">
+          <span>📱</span>
+          <div class="dev-name">${d.nombre||'Dispositivo'}</div>
+          <div class="dev-fecha">${d.fecha?new Date(d.fecha).toLocaleDateString('es-MX'):''}</div>
+          <button class="btn b-dan b-sm" onclick='expulsar("${u.id}",${JSON.stringify(d).replace(/"/g,"&quot;")})'>🚫 Expulsar</button>
+        </div>`).join('')}
+    </div>` : '';
+
+  return `
+  <div class="u-card">
+    <div class="u-top">
+      <span style="font-size:32px">👤</span>
+      <div class="u-info">
+        <div class="u-name">${u.id}</div>
+        <div class="u-meta">
+          ${rolTag} ${estTag} ${dispTag}
+          <span style="color:#64748b;font-size:11px">🔑 ${u.password||'—'}</span>
+        </div>
+        ${notaHTML}
+        ${devsHTML}
+      </div>
+      <div class="u-acts">
+        <button class="btn b-gho b-sm" onclick='abrirEditar("${u.id}")'>✏️ Editar</button>
+        ${u.activa
+          ? `<button class="btn b-war b-sm" onclick='toggleLic("${u.id}",false)'>🔴 Desactivar</button>`
+          : `<button class="btn b-suc b-sm" onclick='toggleLic("${u.id}",true)'>🟢 Activar</button>`}
+        <button class="btn b-pur b-sm" onclick='cambiarRol("${u.id}","${u.rol||'cajero'}")'>${u.rol==='admin'?'🛒→Cajero':'👑→Admin'}</button>
+        <button class="btn b-dan b-sm" onclick='eliminar("${u.id}")'>🗑️</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── ACCIONES ──────────────────────────────────────────────────────────────────
+async function toggleLic(id, estado) {
+  if (!confirm(`¿${estado?'Activar':'Desactivar'} la licencia de "${id}"?`)) return;
+  try { await lic.doc(id).update({ activa: estado }); toast(`${estado?'🟢 Activada':'🔴 Desactivada'}: ${id}`, estado?'success':'error'); }
+  catch(e) { toast('❌ '+e.message,'error'); }
+}
+
+async function cambiarRol(id, rolActual) {
+  const nuevo = rolActual==='admin'?'cajero':'admin';
+  if (!confirm(`¿Cambiar "${id}" a rol ${nuevo==='admin'?'👑 Admin':'🛒 Cajero'}?`)) return;
+  try { await lic.doc(id).update({ rol: nuevo }); toast(`Rol actualizado: ${id} → ${nuevo}`,'success'); }
+  catch(e) { toast('❌ '+e.message,'error'); }
+}
+
+async function expulsar(userId, dispositivo) {
+  if (!confirm(`¿Expulsar "${dispositivo.nombre||'Dispositivo'}" de "${userId}"?\nSe cierra su sesión al instante.`)) return;
+  try {
+    await lic.doc(userId).update({ dispositivosActivos: firebase.firestore.FieldValue.arrayRemove(dispositivo) });
+    toast('🚫 Dispositivo expulsado','success');
+  } catch(e) { toast('❌ '+e.message,'error'); }
+}
+
+async function eliminar(id) {
+  if (!confirm(`⚠️ ¿ELIMINAR "${id}"? No se puede deshacer.`)) return;
+  if (!confirm(`Confirma: ¿eliminar permanentemente "${id}"?`)) return;
+  try { await lic.doc(id).delete(); toast('🗑️ Eliminado: '+id,'info'); }
+  catch(e) { toast('❌ '+e.message,'error'); }
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────────
+let _edit = false, _editId = null;
+
+function abrirCrear() {
+  _edit=false; _editId=null;
+  document.getElementById('mTitulo').textContent='➕ Nuevo usuario';
+  document.getElementById('btnG').textContent='💾 Crear';
+  document.getElementById('mUser').value='';
+  document.getElementById('mUser').disabled=false;
+  document.getElementById('mPass').value='';
+  document.getElementById('mRol').value='cajero';
+  document.getElementById('mDisp').value='1';
+  document.getElementById('mNota').value='';
+  document.getElementById('modalU').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('mUser').focus(),100);
+}
+
+async function abrirEditar(id) {
+  _edit=true; _editId=id;
+  document.getElementById('mTitulo').textContent=`✏️ Editar: ${id}`;
+  document.getElementById('btnG').textContent='💾 Guardar cambios';
+  document.getElementById('mUser').value=id;
+  document.getElementById('mUser').disabled=true;
+  try {
+    const s = await lic.doc(id).get();
+    const d = s.data();
+    document.getElementById('mPass').value=d.password||'';
+    document.getElementById('mRol').value=d.rol||'cajero';
+    document.getElementById('mDisp').value=String(d.dispositivosPermitidos||1);
+    document.getElementById('mNota').value=d.notaPago||'';
+    document.getElementById('modalU').classList.remove('hidden');
+  } catch(e) { toast('❌ '+e.message,'error'); }
+}
+
+function cerrarModal() { document.getElementById('modalU').classList.add('hidden'); }
+
+async function guardar() {
+  const user = document.getElementById('mUser').value.trim().toLowerCase().replace(/\s/g,'');
+  const pass = document.getElementById('mPass').value.trim();
+  const rol  = document.getElementById('mRol').value;
+  const disp = parseInt(document.getElementById('mDisp').value);
+  const nota = document.getElementById('mNota').value.trim();
+  if (!user) { toast('Escribe un usuario','error'); return; }
+  if (!pass) { toast('Escribe una contraseña','error'); return; }
+  const btn = document.getElementById('btnG');
+  btn.disabled=true; btn.textContent='Guardando...';
+  try {
+    if (_edit) {
+      await lic.doc(_editId).update({ password:pass, rol, dispositivosPermitidos:disp, ...(nota&&{notaPago:nota}) });
+      toast('✅ Actualizado: '+_editId,'success');
+    } else {
+      const ex = await lic.doc(user).get();
+      if (ex.exists) { toast('❌ Ya existe ese usuario','error'); btn.disabled=false; btn.textContent='💾 Crear'; return; }
+      await lic.doc(user).set({ activa:true, password:pass, rol, dispositivosPermitidos:disp, dispositivosActivos:[], notaPago:nota, creadoEn:new Date().toISOString() });
+      toast('✅ Usuario creado: '+user,'success');
+    }
+    cerrarModal();
+  } catch(e) { toast('❌ '+e.message,'error'); }
+  btn.disabled=false;
+  btn.textContent=_edit?'💾 Guardar cambios':'💾 Crear';
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+let _tt;
+function toast(msg,type='success') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='show '+type;
+  clearTimeout(_tt); _tt=setTimeout(()=>t.className='',3500);
+}
+
+// ── PROTECCIÓN BÁSICA ─────────────────────────────────────────────────────────
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{
+  if(e.key==='F12'){e.preventDefault();return;}
+  if((e.ctrlKey||e.metaKey)&&e.shiftKey&&['I','J','C'].includes(e.key.toUpperCase())){e.preventDefault();}
+},true);
 </script>
 </body>
 </html>
