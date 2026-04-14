@@ -134,6 +134,13 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;min-height:100vh
 #toast.info{background:#dbeafe;color:#1d4ed8;border:1px solid #3b82f6}
 
 .empty{text-align:center;padding:32px;color:#94a3b8;font-size:14px}
+.venc-ok{background:#dcfce7;color:#166534;border:1px solid #86efac;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:800;display:inline-flex;align-items:center;gap:4px}
+.venc-warn{background:#fef3c7;color:#92400e;border:1px solid #f59e0b;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:800;display:inline-flex;align-items:center;gap:4px;animation:pulso .8s infinite alternate}
+.venc-danger{background:#fee2e2;color:#dc2626;border:1px solid #ef4444;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:800;display:inline-flex;align-items:center;gap:4px;animation:pulso .5s infinite alternate}
+.venc-expired{background:#1e293b;color:white;border:1px solid #475569;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:800;display:inline-flex;align-items:center;gap:4px}
+@keyframes pulso{from{opacity:1}to{opacity:.6}}
+#alertaVoz{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:500;background:linear-gradient(135deg,#dc2626,#991b1b);color:white;padding:16px 24px;border-radius:14px;font-size:14px;font-weight:700;box-shadow:0 8px 32px rgba(0,0,0,.4);max-width:500px;width:90%;text-align:center;display:none}
+#alertaVoz button{margin-top:10px;padding:8px 20px;background:white;color:#dc2626;border:none;border-radius:8px;font-weight:800;cursor:pointer;font-size:13px}
 .vista-btn{padding:6px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;background:white;color:#64748b}
 .vista-btn.activo{background:#1d4ed8;color:white;border-color:#1d4ed8}
 
@@ -245,6 +252,10 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;min-height:100vh
         <option value="4">4 dispositivos</option>
       </select>
     </div>
+    <div class="campo"><label>📅 Fecha de vencimiento de suscripción</label>
+      <input id="mVencimiento" type="date" style="width:100%;padding:11px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;outline:none;color:#1e293b">
+      <div id="mVencimientoInfo" style="margin-top:6px;font-size:12px;font-weight:700;display:none"></div>
+    </div>
     <div class="campo"><label>Nota de pago (opcional)</label><input id="mNota" type="text" placeholder="ej: Pagó abril 2025"></div>
     <div class="modal-btns">
       <button class="btn b-gho" onclick="cerrarModal()">Cancelar</button>
@@ -254,6 +265,11 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;min-height:100vh
 </div>
 
 <div id="toast"></div>
+
+<div id="alertaVoz">
+  <div id="alertaVozMsg"></div>
+  <button onclick="cerrarAlertaVoz()">✓ Entendido</button>
+</div>
 
 <script>
 const MP = 'Jarras2009';
@@ -308,6 +324,7 @@ function cargarUsuarios() {
     snap.forEach(d=>_todosUsers.push({id:d.id,...d.data()}));
     stats(_todosUsers);
     aplicarFiltros();
+    verificarVencimientosAdmin(_todosUsers);
   },err=>{g.innerHTML='<div class="empty">❌ '+err.message+'</div>';});
 }
 
@@ -465,6 +482,24 @@ function renderArbol(docs) {
   g.innerHTML = html;
 }
 
+function diasRestantes(fechaStr) {
+  if (!fechaStr) return null;
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  const venc = new Date(fechaStr + 'T00:00:00');
+  return Math.ceil((venc - hoy) / (1000*60*60*24));
+}
+
+function badgeVencimiento(u) {
+  if (!u.vencimiento) return '';
+  const dias = diasRestantes(u.vencimiento);
+  const fecha = new Date(u.vencimiento + 'T00:00:00').toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'});
+  if (dias < 0)  return `<span class="venc-expired">💀 Vencida hace ${Math.abs(dias)} día(s)</span>`;
+  if (dias === 0) return `<span class="venc-danger">🚨 ¡Vence HOY!</span>`;
+  if (dias <= 3)  return `<span class="venc-danger">🔥 Vence en ${dias} día(s) · ${fecha}</span>`;
+  if (dias <= 7)  return `<span class="venc-warn">⚠️ Vence en ${dias} días · ${fecha}</span>`;
+  return `<span class="venc-ok">✅ Vigente ${dias} días · ${fecha}</span>`;
+}
+
 function cardHTML(u) {
   const act  = u.dispositivosActivos || [];
   const per  = u.dispositivosPermitidos || 1;
@@ -474,6 +509,7 @@ function cardHTML(u) {
   const estT  = u.activa ? '<span class="tag tg">🟢 Activa</span>' : '<span class="tag tr">🔴 Inactiva</span>';
   const disT  = `<span class="tag ${act.length>=per?'tr':'tg'}">📱 ${act.length}/${per}</span>`;
   const nota  = u.notaPago ? `<div class="nota-p">💰 ${u.notaPago}</div>` : '';
+  const vencBadge = badgeVencimiento(u);
   const admLink = !esAdmin && u.adminId
     ? `<div style="font-size:12px;color:#0369a1;font-weight:700;margin-bottom:4px">🔗 Admin: <strong>${u.adminId}</strong></div>`
     : '';
@@ -517,12 +553,14 @@ function cardHTML(u) {
         ${u.farmaciaName?`<div class="u-farmacia">🏪 ${u.farmaciaName}</div>`:''}
         ${admLink}
         <div class="u-meta">${rolT} ${estT} ${disT} <span style="font-size:11px;color:#94a3b8">🔑 ${u.password||'—'}</span></div>
+        ${vencBadge ? `<div style="margin-top:6px">${vencBadge}</div>` : ''}
         ${nota}
         ${permisosHTML}
         ${devsHTML}
       </div>
       <div class="u-acts">
         <button class="btn b-gho b-sm" onclick='editar("${u.id}")'>✏️ Editar</button>
+        ${esAdmin ? `<button class="btn b-sm" style="background:linear-gradient(135deg,#059669,#047857);color:white" onclick='agregarCajeroPara("${u.id}")'>➕ Cajero</button>` : ''}
         ${u.activa
           ? `<button class="btn b-war b-sm" onclick='toggleLic("${u.id}",false)'>🔴 Desactivar</button>`
           : `<button class="btn b-suc b-sm" onclick='toggleLic("${u.id}",true)'>🟢 Activar</button>`}
@@ -572,6 +610,35 @@ function togglePermisosModal(rol) {
   campoAdmin.style.display = rol==='admin'?'none':'';
 }
 
+function agregarCajeroPara(adminId) {
+  abrirCrear();
+  document.getElementById('mRol').value = 'cajero';
+  document.getElementById('mAdminId').value = adminId;
+  togglePermisosModal('cajero');
+  document.getElementById('mTit').textContent = '➕ Nuevo cajero para: ' + adminId;
+  // Copiar fecha de vencimiento del admin
+  const admin = _todosUsers.find(u => u.id === adminId);
+  if (admin && admin.vencimiento) {
+    document.getElementById('mVencimiento').value = admin.vencimiento;
+    actualizarInfoVencimiento();
+  }
+}
+
+function actualizarInfoVencimiento() {
+  const val = document.getElementById('mVencimiento').value;
+  const info = document.getElementById('mVencimientoInfo');
+  if (!val) { info.style.display='none'; return; }
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  const venc = new Date(val + 'T00:00:00');
+  const dias = Math.ceil((venc - hoy)/(1000*60*60*24));
+  info.style.display = '';
+  if (dias < 0) { info.style.color='#dc2626'; info.textContent='💀 Ya venció hace ' + Math.abs(dias) + ' día(s)'; }
+  else if (dias === 0) { info.style.color='#dc2626'; info.textContent='🚨 ¡Vence HOY!'; }
+  else if (dias <= 3) { info.style.color='#dc2626'; info.textContent='🔥 Vence en ' + dias + ' día(s) — MUY PRONTO'; }
+  else if (dias <= 7) { info.style.color='#f59e0b'; info.textContent='⚠️ Vence en ' + dias + ' días'; }
+  else { info.style.color='#16a34a'; info.textContent='✅ Vigente por ' + dias + ' días más'; }
+}
+
 function abrirCrear() {
   _edit=false;_editId=null;
   document.getElementById('mTit').textContent='➕ Nuevo usuario';
@@ -584,6 +651,8 @@ function abrirCrear() {
   document.getElementById('mAdminId').value='';
   document.getElementById('mDisp').value='1';
   document.getElementById('mNota').value='';
+  document.getElementById('mVencimiento').value='';
+  document.getElementById('mVencimientoInfo').style.display='none';
   document.getElementById('pCorte').checked=false;
   document.getElementById('pReportes').checked=false;
   document.getElementById('pConfig').checked=false;
@@ -608,6 +677,8 @@ async function editar(id) {
     document.getElementById('mAdminId').value=d.adminId||'';
     document.getElementById('mDisp').value=String(d.dispositivosPermitidos||1);
     document.getElementById('mNota').value=d.notaPago||'';
+    document.getElementById('mVencimiento').value=d.vencimiento||'';
+    actualizarInfoVencimiento();
     const p=d.permisos||{};
     document.getElementById('pCorte').checked=!!p.corte;
     document.getElementById('pReportes').checked=!!p.reportes;
@@ -619,6 +690,10 @@ async function editar(id) {
 }
 
 function cerrarModal(){document.getElementById('modalU').classList.add('oculto');}
+document.addEventListener('DOMContentLoaded', () => {
+  const v = document.getElementById('mVencimiento');
+  if(v) v.addEventListener('change', actualizarInfoVencimiento);
+});
 
 async function guardar() {
   const user     =document.getElementById('mUser').value.trim().toLowerCase().replace(/\s/g,'');
@@ -628,6 +703,7 @@ async function guardar() {
   const adminId  =document.getElementById('mAdminId').value.trim().toLowerCase()||null;
   const disp     =parseInt(document.getElementById('mDisp').value);
   const nota     =document.getElementById('mNota').value.trim();
+  const vencimiento = document.getElementById('mVencimiento').value || null;
   const permisos ={
     corte:           document.getElementById('pCorte').checked,
     reportes:        document.getElementById('pReportes').checked,
@@ -644,6 +720,7 @@ async function guardar() {
       if(farmName)upd.farmaciaName=farmName;
       if(adminId!==null)upd.adminId=adminId;
       if(nota!=='')upd.notaPago=nota;
+      upd.vencimiento = vencimiento;
       await lic.doc(_editId).update(upd);
       toast('✅ Actualizado: '+_editId,'success');
     } else {
@@ -657,7 +734,8 @@ async function guardar() {
         dispositivosPermitidos:disp,
         dispositivosActivos:[],
         notaPago:nota,
-        creadoEn:new Date().toISOString()
+        creadoEn:new Date().toISOString(),
+        vencimiento
       });
       toast('✅ Usuario creado: '+user,'success');
     }
@@ -668,6 +746,64 @@ async function guardar() {
 }
 
 // ─── TOAST ───────────────────────────────────────────────────────────────────
+// ─── ALERTAS DE VOZ ──────────────────────────────────────────────────────────
+function hablar(texto) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(texto);
+  u.lang = 'es-MX';
+  u.rate = 0.9;
+  u.pitch = 1;
+  window.speechSynthesis.speak(u);
+}
+
+function cerrarAlertaVoz() {
+  document.getElementById('alertaVoz').style.display = 'none';
+  window.speechSynthesis.cancel();
+}
+
+function verificarVencimientosAdmin(docs) {
+  // Solo mostrar una vez por sesión
+  if (sessionStorage.getItem('_alerta_venc_admin')) return;
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  const porVencer = docs.filter(u => {
+    if (!u.vencimiento) return false;
+    const d = Math.ceil((new Date(u.vencimiento+'T00:00:00') - hoy)/(1000*60*60*24));
+    return d >= 0 && d <= 3;
+  });
+  const vencidos = docs.filter(u => {
+    if (!u.vencimiento) return false;
+    const d = Math.ceil((new Date(u.vencimiento+'T00:00:00') - hoy)/(1000*60*60*24));
+    return d < 0;
+  });
+  if (!porVencer.length && !vencidos.length) return;
+  sessionStorage.setItem('_alerta_venc_admin', '1');
+
+  let msgs = [];
+  let textoVoz = '';
+  if (vencidos.length) {
+    vencidos.forEach(u => {
+      const dias = Math.abs(Math.ceil((new Date(u.vencimiento+'T00:00:00') - hoy)/(1000*60*60*24)));
+      msgs.push(`💀 <strong>${u.farmaciaName||u.id}</strong> — venció hace ${dias} día(s)`);
+    });
+    textoVoz += `Atención. ${vencidos.length} suscripción${vencidos.length>1?'es han':'ha'} vencido. `;
+  }
+  if (porVencer.length) {
+    porVencer.forEach(u => {
+      const dias = Math.ceil((new Date(u.vencimiento+'T00:00:00') - hoy)/(1000*60*60*24));
+      const txt = dias === 0 ? '¡HOY!' : `en ${dias} día(s)`;
+      msgs.push(`🔥 <strong>${u.farmaciaName||u.id}</strong> — vence ${txt}`);
+    });
+    textoVoz += `${porVencer.length} suscripción${porVencer.length>1?'es vencen':'vence'} pronto. Revisa el panel.`;
+  }
+
+  const div = document.getElementById('alertaVoz');
+  const msg = document.getElementById('alertaVozMsg');
+  msg.innerHTML = '🔔 <strong>Suscripciones por vencer:</strong><br><br>' + msgs.join('<br>');
+  div.style.display = 'block';
+  setTimeout(() => hablar(textoVoz), 800);
+}
+
 let _tt;
 function toast(msg,type='success'){
   const t=document.getElementById('toast');
