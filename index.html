@@ -7,173 +7,140 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: Arial, sans-serif; background: #1e3a5f; min-height: 100vh; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;min-height:100vh}
 
 /* LOGIN */
-#loginWrap {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.login-box {
-  background: white;
-  border-radius: 16px;
-  padding: 40px 32px;
-  width: 100%;
-  max-width: 380px;
-  text-align: center;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-}
-.login-box .ico { font-size: 52px; margin-bottom: 12px; }
-.login-box h1 { color: #1e293b; font-size: 22px; margin-bottom: 6px; }
-.login-box p { color: #64748b; font-size: 13px; margin-bottom: 28px; }
-.login-box input {
-  width: 100%;
-  padding: 13px 15px;
-  border: 2px solid #e2e8f0;
-  border-radius: 10px;
-  font-size: 16px;
-  margin-bottom: 12px;
-  outline: none;
-  color: #1e293b;
-}
-.login-box input:focus { border-color: #3b82f6; }
-.btn-entrar {
-  width: 100%;
-  padding: 14px;
-  background: #1d4ed8;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-weight: 800;
-  font-size: 16px;
-  cursor: pointer;
-}
-.btn-entrar:hover { background: #1e40af; }
-.err-msg {
-  display: none;
-  margin-top: 12px;
-  padding: 10px;
-  background: #fee2e2;
-  color: #dc2626;
-  border-radius: 8px;
-  font-size: 13px;
-}
+#loginWrap{width:100%;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#1e293b,#1d4ed8)}
+.login-box{background:white;border-radius:20px;padding:40px 32px;width:100%;max-width:380px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.login-box .ico{font-size:52px;margin-bottom:12px}
+.login-box h1{color:#1e293b;font-size:22px;margin-bottom:6px}
+.login-box p{color:#64748b;font-size:13px;margin-bottom:28px}
+.login-box input{width:100%;padding:13px 15px;border:2px solid #e2e8f0;border-radius:10px;font-size:16px;margin-bottom:12px;outline:none;color:#1e293b}
+.login-box input:focus{border-color:#3b82f6}
+.btn-entrar{width:100%;padding:14px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);color:white;border:none;border-radius:10px;font-weight:800;font-size:16px;cursor:pointer}
+.err-msg{display:none;margin-top:12px;padding:10px;background:#fee2e2;color:#dc2626;border-radius:8px;font-size:13px}
 
 /* PANEL */
-#panelWrap { display: none; background: #f1f5f9; min-height: 100vh; }
+#panelWrap{display:none;min-height:100vh}
 
 /* HEADER */
-.hdr {
-  background: #1e293b;
-  color: white;
-  padding: 14px 24px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.hdr h1 { font-size: 17px; flex: 1; }
-.hdr .badge {
-  background: #3b82f6;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 99px;
-}
-.btn-salir {
-  padding: 8px 16px;
-  background: transparent;
-  border: 1px solid #475569;
-  color: #94a3b8;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-}
-.btn-salir:hover { border-color: #ef4444; color: #ef4444; }
+.hdr{background:linear-gradient(135deg,#1e293b,#0f172a);color:white;padding:14px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.3)}
+.hdr h1{font-size:17px;flex:1}
+.hdr .badge{background:linear-gradient(135deg,#3b82f6,#7c3aed);font-size:11px;font-weight:700;padding:4px 12px;border-radius:99px}
+.btn-salir{padding:8px 16px;background:transparent;border:1px solid #475569;color:#94a3b8;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer}
+.btn-salir:hover{border-color:#ef4444;color:#ef4444}
 
 /* CONTAINER */
-.cont { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
+.cont{max-width:1100px;margin:0 auto;padding:24px 16px}
 
 /* STATS */
-.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 12px; margin-bottom: 24px; }
-.stat { background: white; border-radius: 12px; padding: 18px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
-.stat .n { font-size: 32px; font-weight: 900; margin-bottom: 4px; }
-.stat .l { font-size: 11px; color: #64748b; text-transform: uppercase; }
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:24px}
+.stat{background:white;border-radius:14px;padding:18px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06);border:1px solid #e2e8f0}
+.stat .n{font-size:32px;font-weight:900;margin-bottom:4px}
+.stat .l{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+
+/* FILTROS */
+.filtros{background:white;border-radius:14px;padding:14px 18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);border:1px solid #e2e8f0;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.filtros label{font-size:12px;font-weight:700;color:#64748b}
+.filtros select,.filtros input{padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:13px;outline:none;color:#1e293b;background:white}
+.filtros select:focus,.filtros input:focus{border-color:#3b82f6}
+.filtros input{min-width:200px;flex:1}
 
 /* SECCIÓN */
-.sec { background: white; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 16px; }
-.sec-hdr { padding: 14px 18px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-.sec-hdr h2 { font-size: 15px; color: #1e293b; }
-.sec-body { padding: 16px; }
+.sec{background:white;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px;border:1px solid #e2e8f0;overflow:hidden}
+.sec-hdr{padding:14px 18px;border-bottom:2px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;background:linear-gradient(to right,#f8fafc,white)}
+.sec-hdr h2{font-size:15px;color:#1e293b;font-weight:800}
+.sec-body{padding:16px}
 
-/* USUARIO */
-.u-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
-.u-top { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-start; }
-.u-info { flex: 1; min-width: 140px; }
-.u-name { font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 6px; }
-.u-meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-.u-acts { display: flex; gap: 6px; flex-wrap: wrap; }
-.devs { margin-top: 10px; border-top: 1px solid #e2e8f0; padding-top: 10px; }
-.dev-row { display: flex; align-items: center; gap: 8px; background: #e2e8f0; border-radius: 8px; padding: 7px 10px; margin-bottom: 6px; flex-wrap: wrap; }
-.dev-name { font-size: 12px; flex: 1; color: #334155; }
-.dev-fecha { font-size: 11px; color: #94a3b8; }
+/* GRUPO ADMIN */
+.grupo-admin{margin-bottom:24px}
+.grupo-admin-header{background:linear-gradient(135deg,#1e293b,#334155);color:white;border-radius:12px;padding:14px 18px;margin-bottom:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.grupo-admin-header .admin-nombre{font-size:16px;font-weight:900;flex:1}
+.grupo-admin-header .admin-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.cajeros-lista{padding-left:20px;border-left:3px solid #3b82f6;margin-left:16px}
+.cajero-conector{position:relative}
+.cajero-conector::before{content:'';position:absolute;left:-23px;top:20px;width:20px;height:2px;background:#3b82f6;opacity:.5}
+
+/* USUARIO CARD */
+.u-card{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:14px 16px;margin-bottom:8px;transition:box-shadow .2s}
+.u-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.u-card.admin-card{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border-color:#0ea5e9}
+.u-card.cajero-card{background:white;border-color:#e2e8f0}
+.u-top{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start}
+.u-info{flex:1;min-width:140px}
+.u-name{font-size:16px;font-weight:800;color:#1e293b;margin-bottom:4px}
+.u-farmacia{font-size:13px;color:#0369a1;font-weight:700;margin-bottom:4px}
+.u-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.u-acts{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start}
+
+/* PERMISOS VISUALES */
+.permisos-box{margin-top:10px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 12px}
+.permisos-titulo{font-size:10px;font-weight:800;color:#166534;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.permisos-grid{display:flex;gap:8px;flex-wrap:wrap}
+.permiso-item{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px}
+.permiso-on{background:#dcfce7;color:#166534;border:1px solid #86efac}
+.permiso-off{background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;text-decoration:line-through;opacity:.6}
+
+/* SIN ADMIN */
+.sin-admin-section{margin-bottom:20px}
+.sin-admin-header{background:#fef3c7;border:1.5px dashed #f59e0b;border-radius:12px;padding:12px 16px;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.sin-admin-header span{font-size:13px;font-weight:700;color:#92400e}
+
+/* DISPOSITIVOS */
+.devs{margin-top:10px;border-top:1px solid #e2e8f0;padding-top:10px}
+.dev-row{display:flex;align-items:center;gap:8px;background:#e2e8f0;border-radius:8px;padding:7px 10px;margin-bottom:6px;flex-wrap:wrap}
+.dev-name{font-size:12px;flex:1;color:#334155;font-weight:600}
+.dev-fecha{font-size:11px;color:#94a3b8}
 
 /* TAGS */
-.tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
-.tg { background: #dcfce7; color: #166534; }
-.tr { background: #fee2e2; color: #dc2626; }
-.tb { background: #dbeafe; color: #1d4ed8; }
-.ty { background: #fef3c7; color: #92400e; }
+.tag{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px}
+.tg{background:#dcfce7;color:#166534}
+.tr{background:#fee2e2;color:#dc2626}
+.tb{background:#dbeafe;color:#1d4ed8}
+.ty{background:#fef3c7;color:#92400e}
+.tp{background:#f3e8ff;color:#7c3aed}
 
 /* BOTONES */
-.btn { padding: 7px 12px; border: none; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; }
-.b-pri { background: #3b82f6; color: white; }
-.b-suc { background: #10b981; color: white; }
-.b-dan { background: #ef4444; color: white; }
-.b-war { background: #f59e0b; color: white; }
-.b-gho { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
-.b-pur { background: #8b5cf6; color: white; }
-.b-sm { padding: 4px 9px; font-size: 11px; }
+.btn{padding:7px 12px;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;transition:opacity .15s}
+.btn:hover{opacity:.85}
+.b-pri{background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:white}
+.b-suc{background:#10b981;color:white}
+.b-dan{background:#ef4444;color:white}
+.b-war{background:#f59e0b;color:white}
+.b-gho{background:#f1f5f9;color:#334155;border:1px solid #cbd5e1}
+.b-pur{background:#8b5cf6;color:white}
+.b-sm{padding:5px 10px;font-size:11px}
 
 /* MODAL */
-.modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 16px; }
-.modal-bg.oculto { display: none; }
-.modal { background: white; border-radius: 16px; padding: 24px; width: 100%; max-width: 440px; }
-.modal h3 { font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 18px; }
-.campo { margin-bottom: 12px; }
-.campo label { display: block; font-size: 12px; color: #64748b; font-weight: 600; margin-bottom: 4px; }
-.campo input, .campo select { width: 100%; padding: 11px 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none; color: #1e293b; }
-.campo input:focus, .campo select:focus { border-color: #3b82f6; }
-.modal-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(2px)}
+.modal-bg.oculto{display:none}
+.modal{background:white;border-radius:16px;padding:24px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal h3{font-size:16px;font-weight:800;color:#1e293b;margin-bottom:18px}
+.campo{margin-bottom:12px}
+.campo label{display:block;font-size:12px;color:#64748b;font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px}
+.campo input,.campo select{width:100%;padding:11px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;outline:none;color:#1e293b}
+.campo input:focus,.campo select:focus{border-color:#3b82f6}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
 
-/* NOTA */
-.nota-p { font-size: 11px; color: #64748b; font-style: italic; margin-top: 4px; }
+/* NOTA PAGO */
+.nota-p{font-size:11px;color:#64748b;font-style:italic;margin-top:4px;background:#fef9c3;padding:4px 8px;border-radius:6px;display:inline-block}
 
 /* TOAST */
-#toast {
-  position: fixed; bottom: 24px; right: 24px; z-index: 999;
-  padding: 12px 18px; border-radius: 10px; font-size: 13px; font-weight: 700;
-  transform: translateY(60px); opacity: 0; transition: all .3s; max-width: 320px;
-}
-#toast.show { transform: translateY(0); opacity: 1; }
-#toast.success { background: #dcfce7; color: #166534; border: 1px solid #10b981; }
-#toast.error { background: #fee2e2; color: #dc2626; border: 1px solid #ef4444; }
-#toast.info { background: #dbeafe; color: #1d4ed8; border: 1px solid #3b82f6; }
+#toast{position:fixed;bottom:24px;right:24px;z-index:999;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:700;transform:translateY(60px);opacity:0;transition:all .3s;max-width:320px}
+#toast.show{transform:translateY(0);opacity:1}
+#toast.success{background:#dcfce7;color:#166534;border:1px solid #10b981}
+#toast.error{background:#fee2e2;color:#dc2626;border:1px solid #ef4444}
+#toast.info{background:#dbeafe;color:#1d4ed8;border:1px solid #3b82f6}
 
-.empty { text-align: center; padding: 32px; color: #94a3b8; font-size: 14px; }
+.empty{text-align:center;padding:32px;color:#94a3b8;font-size:14px}
+.vista-btn{padding:6px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;background:white;color:#64748b}
+.vista-btn.activo{background:#1d4ed8;color:white;border-color:#1d4ed8}
 
 @media(max-width:600px){
-  .hdr { padding: 12px 14px; }
-  .login-box { padding: 28px 20px; }
-  .modal { padding: 18px; }
+  .hdr{padding:12px 14px}
+  .filtros{padding:10px 12px}
+  .cajeros-lista{padding-left:10px;margin-left:8px}
 }
 </style>
 </head>
@@ -201,24 +168,43 @@ body { font-family: Arial, sans-serif; background: #1e3a5f; min-height: 100vh; }
     <button class="btn-salir" onclick="doLogout()">🚪 Salir</button>
   </div>
   <div class="cont">
+
+    <!-- STATS -->
     <div class="stats">
-      <div class="stat"><div class="n" id="stTotal" style="color:#3b82f6">0</div><div class="l">Usuarios</div></div>
+      <div class="stat"><div class="n" id="stTotal" style="color:#3b82f6">0</div><div class="l">Total usuarios</div></div>
+      <div class="stat"><div class="n" id="stAdmins" style="color:#f59e0b">0</div><div class="l">Admins</div></div>
+      <div class="stat"><div class="n" id="stCajeros" style="color:#8b5cf6">0</div><div class="l">Cajeros</div></div>
       <div class="stat"><div class="n" id="stAct" style="color:#10b981">0</div><div class="l">Activos</div></div>
-      <div class="stat"><div class="n" id="stDisp" style="color:#f59e0b">0</div><div class="l">Dispositivos</div></div>
+      <div class="stat"><div class="n" id="stDisp" style="color:#0ea5e9">0</div><div class="l">Dispositivos</div></div>
       <div class="stat"><div class="n" id="stInact" style="color:#ef4444">0</div><div class="l">Inactivos</div></div>
     </div>
-    <div class="sec">
-      <div class="sec-hdr">
-        <h2>👥 Usuarios y Licencias</h2>
-        <div style="display:flex;gap:8px">
-          <button class="btn b-gho" onclick="recargar()">🔄 Actualizar</button>
-          <button class="btn b-pri" onclick="abrirCrear()">➕ Nuevo usuario</button>
-        </div>
-      </div>
-      <div class="sec-body">
-        <div id="userGrid"><div class="empty">⏳ Cargando...</div></div>
+
+    <!-- FILTROS Y ACCIONES -->
+    <div class="filtros">
+      <label>🔍</label>
+      <input id="filtBuscar" placeholder="Buscar usuario o farmacia..." oninput="aplicarFiltros()">
+      <select id="filtRol" onchange="aplicarFiltros()">
+        <option value="">Todos los roles</option>
+        <option value="admin">👑 Solo Admins</option>
+        <option value="cajero">🛒 Solo Cajeros</option>
+      </select>
+      <select id="filtEstado" onchange="aplicarFiltros()">
+        <option value="">Todos los estados</option>
+        <option value="activa">🟢 Activos</option>
+        <option value="inactiva">🔴 Inactivos</option>
+      </select>
+      <select id="filtVista" onchange="aplicarFiltros()">
+        <option value="arbol">🌳 Vista árbol (Admin → Cajeros)</option>
+        <option value="lista">📋 Lista plana</option>
+      </select>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="btn b-gho" onclick="recargar()">🔄 Actualizar</button>
+        <button class="btn b-pri" onclick="abrirCrear()">➕ Nuevo usuario</button>
       </div>
     </div>
+
+    <!-- GRID DE USUARIOS -->
+    <div id="userGrid"><div class="empty">⏳ Cargando...</div></div>
   </div>
 </div>
 
@@ -227,22 +213,39 @@ body { font-family: Arial, sans-serif; background: #1e3a5f; min-height: 100vh; }
   <div class="modal">
     <h3 id="mTit">➕ Nuevo usuario</h3>
     <div class="campo"><label>Usuario (minúsculas, sin espacios)</label><input id="mUser" type="text" placeholder="ej: cajero1" autocapitalize="none"></div>
+    <div class="campo"><label>Nombre de la farmacia / punto de venta</label><input id="mFarmaciaName" type="text" placeholder="ej: Farmacia Centro"></div>
     <div class="campo"><label>Contraseña</label><input id="mPass" type="text" placeholder="ej: 1234"></div>
     <div class="campo"><label>Rol</label>
-      <select id="mRol">
-        <option value="cajero">🛒 Cajero — solo venta e inventario</option>
-        <option value="admin">👑 Admin — acceso completo</option>
+      <select id="mRol" onchange="togglePermisosModal(this.value)">
+        <option value="cajero">🛒 Cajero — venta e inventario</option>
+        <option value="admin">👑 Admin — acceso completo a sus farmacias</option>
       </select>
+    </div>
+    <div class="campo" id="campoAdminId"><label>ID del Admin al que pertenece</label><input id="mAdminId" type="text" placeholder="ej: farmacia1 (usuario del admin)"></div>
+    <div id="seccionPermisos" style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:14px;margin-bottom:12px">
+      <div style="font-size:11px;font-weight:800;color:#166534;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">Permisos adicionales del cajero</div>
+      <label style="display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;font-size:14px">
+        <input type="checkbox" id="pCorte" style="width:16px;height:16px"> ✂️ Puede hacer corte de caja
+      </label>
+      <label style="display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;font-size:14px">
+        <input type="checkbox" id="pReportes" style="width:16px;height:16px"> 📊 Puede ver reportes de ventas
+      </label>
+      <label style="display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;font-size:14px">
+        <input type="checkbox" id="pConfig" style="width:16px;height:16px"> ⚙️ Puede modificar configuración
+      </label>
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px">
+        <input type="checkbox" id="pInvEdit" checked style="width:16px;height:16px"> 🗑️ Puede eliminar productos del inventario
+      </label>
     </div>
     <div class="campo"><label>Dispositivos permitidos</label>
       <select id="mDisp">
         <option value="1">1 dispositivo (plan base)</option>
-        <option value="2">2 dispositivos (+$100 MXN/mes)</option>
-        <option value="3">3 dispositivos (+$200 MXN/mes)</option>
-        <option value="4">4 dispositivos (+$300 MXN/mes)</option>
+        <option value="2">2 dispositivos</option>
+        <option value="3">3 dispositivos</option>
+        <option value="4">4 dispositivos</option>
       </select>
     </div>
-    <div class="campo"><label>Nota de pago (opcional)</label><input id="mNota" type="text" placeholder="ej: Pagó enero 2025"></div>
+    <div class="campo"><label>Nota de pago (opcional)</label><input id="mNota" type="text" placeholder="ej: Pagó abril 2025"></div>
     <div class="modal-btns">
       <button class="btn b-gho" onclick="cerrarModal()">Cancelar</button>
       <button class="btn b-pri" id="btnG" onclick="guardar()">💾 Guardar</button>
@@ -253,224 +256,431 @@ body { font-family: Arial, sans-serif; background: #1e3a5f; min-height: 100vh; }
 <div id="toast"></div>
 
 <script>
-// ─── CONTRASEÑA MAESTRA ───────────────────────────────────────────────────────
 const MP = 'Jarras2009';
-
-// ─── FIREBASE ─────────────────────────────────────────────────────────────────
 const fbCfg = {
-  apiKey:            'AIzaSyAuJFzKFx1F35f-oD9rnYo01D2HJCGt_C8',
-  authDomain:        'brandy-skincare-pos.firebaseapp.com',
-  projectId:         'brandy-skincare-pos',
-  storageBucket:     'brandy-skincare-pos.firebasestorage.app',
-  messagingSenderId: '661572753505',
-  appId:             '1:661572753505:web:d4104559379c9189be3220'
+  apiKey:'AIzaSyAuJFzKFx1F35f-oD9rnYo01D2HJCGt_C8',
+  authDomain:'brandy-skincare-pos.firebaseapp.com',
+  projectId:'brandy-skincare-pos',
+  storageBucket:'brandy-skincare-pos.firebasestorage.app',
+  messagingSenderId:'661572753505',
+  appId:'1:661572753505:web:d4104559379c9189be3220'
 };
 
-let db = null, lic = null, unsub = null;
+let db=null, lic=null, unsub=null, _todosUsers=[];
 
-try {
-  firebase.initializeApp(fbCfg);
-  db  = firebase.firestore();
-  lic = db.collection('licencias');
-} catch(e) { console.warn('Firebase:', e.message); }
+try { firebase.initializeApp(fbCfg); db=firebase.firestore(); lic=db.collection('licencias'); } catch(e){}
 
-// Sesión persistente
-if (sessionStorage.getItem('_aok') === '1') {
-  document.getElementById('loginWrap').style.display  = 'none';
-  document.getElementById('panelWrap').style.display = 'block';
+if (sessionStorage.getItem('_aok')==='1') {
+  document.getElementById('loginWrap').style.display='none';
+  document.getElementById('panelWrap').style.display='block';
   cargarUsuarios();
 }
 
-// ─── LOGIN ────────────────────────────────────────────────────────────────────
 function doLogin() {
-  const p = document.getElementById('masterPass').value;
-  const e = document.getElementById('errMsg');
-  if (p === MP) {
-    sessionStorage.setItem('_aok', '1');
-    document.getElementById('loginWrap').style.display  = 'none';
-    document.getElementById('panelWrap').style.display = 'block';
+  const p=document.getElementById('masterPass').value;
+  if (p===MP) {
+    sessionStorage.setItem('_aok','1');
+    document.getElementById('loginWrap').style.display='none';
+    document.getElementById('panelWrap').style.display='block';
     cargarUsuarios();
   } else {
-    e.style.display = 'block';
-    document.getElementById('masterPass').value = '';
-    setTimeout(() => e.style.display = 'none', 3000);
+    const e=document.getElementById('errMsg');
+    e.style.display='block';
+    document.getElementById('masterPass').value='';
+    setTimeout(()=>e.style.display='none',3000);
   }
 }
 
 function doLogout() {
   sessionStorage.removeItem('_aok');
-  if (unsub) unsub();
-  document.getElementById('panelWrap').style.display = 'none';
-  document.getElementById('loginWrap').style.display = 'flex';
-  document.getElementById('masterPass').value = '';
+  if(unsub)unsub();
+  document.getElementById('panelWrap').style.display='none';
+  document.getElementById('loginWrap').style.display='flex';
+  document.getElementById('masterPass').value='';
 }
 
-// ─── USUARIOS ─────────────────────────────────────────────────────────────────
 function cargarUsuarios() {
-  const g = document.getElementById('userGrid');
-  if (!lic) { g.innerHTML = '<div class="empty">⚠️ Sin conexión a Firebase</div>'; return; }
-  if (unsub) unsub();
-  unsub = lic.onSnapshot(snap => {
-    const docs = [];
-    snap.forEach(d => docs.push({ id: d.id, ...d.data() }));
-    stats(docs);
-    render(docs);
-  }, err => {
-    g.innerHTML = '<div class="empty">❌ Error: ' + err.message + '</div>';
-  });
+  const g=document.getElementById('userGrid');
+  if(!lic){g.innerHTML='<div class="empty">⚠️ Sin conexión</div>';return;}
+  if(unsub)unsub();
+  unsub=lic.onSnapshot(snap=>{
+    _todosUsers=[];
+    snap.forEach(d=>_todosUsers.push({id:d.id,...d.data()}));
+    stats(_todosUsers);
+    aplicarFiltros();
+  },err=>{g.innerHTML='<div class="empty">❌ '+err.message+'</div>';});
 }
 
-function recargar() { cargarUsuarios(); toast('🔄 Actualizando...', 'info'); }
+function recargar(){cargarUsuarios();toast('🔄 Actualizando...','info');}
 
 function stats(docs) {
   document.getElementById('stTotal').textContent = docs.length;
-  document.getElementById('stAct').textContent   = docs.filter(d => d.activa).length;
-  document.getElementById('stInact').textContent = docs.filter(d => !d.activa).length;
-  document.getElementById('stDisp').textContent  = docs.reduce((a,d) => a + (d.dispositivosActivos?.length||0), 0);
+  document.getElementById('stAdmins').textContent = docs.filter(d=>d.rol==='admin').length;
+  document.getElementById('stCajeros').textContent = docs.filter(d=>d.rol!=='admin').length;
+  document.getElementById('stAct').textContent = docs.filter(d=>d.activa).length;
+  document.getElementById('stInact').textContent = docs.filter(d=>!d.activa).length;
+  document.getElementById('stDisp').textContent = docs.reduce((a,d)=>a+(d.dispositivosActivos?.length||0),0);
 }
 
-function render(docs) {
+function aplicarFiltros() {
+  const buscar = document.getElementById('filtBuscar').value.toLowerCase().trim();
+  const rol    = document.getElementById('filtRol').value;
+  const estado = document.getElementById('filtEstado').value;
+  const vista  = document.getElementById('filtVista').value;
+
+  let docs = _todosUsers.filter(u => {
+    const matchBuscar = !buscar ||
+      u.id.toLowerCase().includes(buscar) ||
+      (u.farmaciaName||'').toLowerCase().includes(buscar) ||
+      (u.adminId||'').toLowerCase().includes(buscar);
+    const matchRol    = !rol    || u.rol===rol || (rol==='cajero' && u.rol!=='admin');
+    const matchEstado = !estado || (estado==='activa'?u.activa:!u.activa);
+    return matchBuscar && matchRol && matchEstado;
+  });
+
   const g = document.getElementById('userGrid');
-  if (!docs.length) { g.innerHTML = '<div class="empty">Sin usuarios. Crea el primero ➕</div>'; return; }
-  g.innerHTML = [...docs].sort((a,b) => a.id.localeCompare(b.id)).map(card).join('');
+  if (!docs.length) { g.innerHTML='<div class="empty">🔍 Sin resultados con ese filtro</div>'; return; }
+
+  if (vista === 'arbol') {
+    renderArbol(docs);
+  } else {
+    g.innerHTML = docs.sort((a,b)=>a.id.localeCompare(b.id)).map(u=>cardHTML(u)).join('');
+  }
 }
 
-function card(u) {
-  const act = u.dispositivosActivos || [];
-  const per = u.dispositivosPermitidos || 1;
-  const rolT  = u.rol === 'admin' ? '<span class="tag ty">👑 Admin</span>' : '<span class="tag tb">🛒 Cajero</span>';
+function renderArbol(docs) {
+  const g = document.getElementById('userGrid');
+  const admins  = docs.filter(u => u.rol==='admin');
+  const cajeros = docs.filter(u => u.rol!=='admin');
+
+  // Agrupar cajeros por adminId
+  const porAdmin = {};
+  cajeros.forEach(c => {
+    const key = c.adminId || '__sin_admin__';
+    if (!porAdmin[key]) porAdmin[key] = [];
+    porAdmin[key].push(c);
+  });
+
+  let html = '';
+
+  // Admins con sus cajeros
+  admins.sort((a,b)=>a.id.localeCompare(b.id)).forEach(admin => {
+    const misCajeros = porAdmin[admin.id] || [];
+    html += '<div class="grupo-admin">';
+
+    // Header del admin
+    const actBadge = admin.activa ? '<span class="tag tg">🟢 Activa</span>' : '<span class="tag tr">🔴 Inactiva</span>';
+    const dispAct  = (admin.dispositivosActivos||[]).length;
+    const dispPer  = admin.dispositivosPermitidos||1;
+    html += `<div class="grupo-admin-header">
+      <span style="font-size:28px">👑</span>
+      <div style="flex:1">
+        <div class="admin-nombre">${admin.id}</div>
+        <div style="font-size:12px;opacity:.8">${admin.farmaciaName||'Sin nombre de farmacia'}</div>
+      </div>
+      <div class="admin-meta">
+        ${actBadge}
+        <span class="tag" style="background:rgba(255,255,255,0.2);color:white">📱 ${dispAct}/${dispPer}</span>
+        <span class="tag" style="background:rgba(255,255,255,0.15);color:white">🔑 ${admin.password||'—'}</span>
+        <span class="tag" style="background:rgba(255,255,255,0.15);color:white">🛒 ${misCajeros.length} cajero${misCajeros.length!==1?'s':''}</span>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn b-gho b-sm" onclick='editar("${admin.id}")'>✏️ Editar</button>
+        ${admin.activa
+          ? `<button class="btn b-war b-sm" onclick='toggleLic("${admin.id}",false)'>🔴 Desactivar</button>`
+          : `<button class="btn b-suc b-sm" onclick='toggleLic("${admin.id}",true)'>🟢 Activar</button>`}
+        <button class="btn b-dan b-sm" onclick='eliminar("${admin.id}")'>🗑️</button>
+      </div>
+    </div>`;
+
+    // Dispositivos del admin
+    if ((admin.dispositivosActivos||[]).length) {
+      html += `<div style="margin-left:16px;margin-bottom:10px;padding:10px 14px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px">
+        <div style="font-size:10px;font-weight:800;color:#0369a1;text-transform:uppercase;margin-bottom:6px">Dispositivos del Admin</div>`;
+      admin.dispositivosActivos.forEach(d => {
+        html += `<div class="dev-row"><span>📱</span><div class="dev-name">${d.nombre||'Dispositivo'}</div>
+          <div class="dev-fecha">${d.fecha?new Date(d.fecha).toLocaleDateString('es-MX'):''}</div>
+          <button class="btn b-dan b-sm" onclick='expulsar("${admin.id}",${JSON.stringify(d).replace(/'/g,"\\'")})''>🚫 Expulsar</button>
+        </div>`;
+      });
+      html += '</div>';
+    }
+
+    // Cajeros de este admin
+    if (misCajeros.length) {
+      html += '<div class="cajeros-lista">';
+      html += `<div style="font-size:11px;font-weight:800;color:#3b82f6;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;padding-left:4px">
+        📋 ${misCajeros.length} Cajero${misCajeros.length!==1?'s':''} vinculado${misCajeros.length!==1?'s':''}
+      </div>`;
+      misCajeros.sort((a,b)=>a.id.localeCompare(b.id)).forEach(c => {
+        html += `<div class="cajero-conector">${cardHTML(c)}</div>`;
+      });
+      html += '</div>';
+    } else {
+      html += `<div style="margin-left:36px;padding:10px 14px;background:#fef9c3;border:1px dashed #f59e0b;border-radius:8px;font-size:12px;color:#92400e">
+        ⚠️ Este admin no tiene cajeros vinculados. Para agregar uno, crea un cajero con adminId = <strong>${admin.id}</strong>
+      </div>`;
+    }
+
+    html += '</div>'; // cierre grupo-admin
+  });
+
+  // Cajeros sin admin asignado
+  const sinAdmin = porAdmin['__sin_admin__'] || [];
+  if (sinAdmin.length) {
+    html += `<div class="sin-admin-section">
+      <div class="sin-admin-header">
+        <span style="font-size:20px">⚠️</span>
+        <span>Cajeros SIN admin asignado (${sinAdmin.length}) — Edítalos y asígnales un adminId</span>
+      </div>`;
+    sinAdmin.forEach(c => { html += cardHTML(c); });
+    html += '</div>';
+  }
+
+  // Admins que no aparecen en docs filtrados pero tienen cajeros
+  // (cuando el filtro muestra solo cajeros)
+  const adminsIds = admins.map(a=>a.id);
+  const cajerosSinAdminEnLista = cajeros.filter(c => c.adminId && !adminsIds.includes(c.adminId));
+  if (cajerosSinAdminEnLista.length && document.getElementById('filtRol').value === 'cajero') {
+    // Agrupar por adminId
+    const grupos = {};
+    cajerosSinAdminEnLista.forEach(c => {
+      if (!grupos[c.adminId]) grupos[c.adminId] = [];
+      grupos[c.adminId].push(c);
+    });
+    Object.entries(grupos).forEach(([adminId, cjs]) => {
+      html += `<div class="grupo-admin">
+        <div class="grupo-admin-header">
+          <span style="font-size:24px">👑</span>
+          <div style="flex:1"><div class="admin-nombre">${adminId}</div><div style="font-size:12px;opacity:.7">Admin (no en filtro actual)</div></div>
+          <span class="tag" style="background:rgba(255,255,255,0.2);color:white">🛒 ${cjs.length} cajero${cjs.length!==1?'s':''}</span>
+        </div>
+        <div class="cajeros-lista">`;
+      cjs.forEach(c => { html += `<div class="cajero-conector">${cardHTML(c)}</div>`; });
+      html += '</div></div>';
+    });
+  }
+
+  if (!html) html = '<div class="empty">🔍 Sin resultados</div>';
+  g.innerHTML = html;
+}
+
+function cardHTML(u) {
+  const act  = u.dispositivosActivos || [];
+  const per  = u.dispositivosPermitidos || 1;
+  const esAdmin = u.rol === 'admin';
+
+  const rolT  = esAdmin ? '<span class="tag ty">👑 Admin</span>' : '<span class="tag tb">🛒 Cajero</span>';
   const estT  = u.activa ? '<span class="tag tg">🟢 Activa</span>' : '<span class="tag tr">🔴 Inactiva</span>';
-  const disT  = '<span class="tag ' + (act.length>=per?'tr':'tg') + '">📱 ' + act.length + '/' + per + '</span>';
-  const nota  = u.notaPago ? '<div class="nota-p">💰 ' + u.notaPago + '</div>' : '';
-  const devs  = act.length ? '<div class="devs"><div style="font-size:11px;color:#94a3b8;margin-bottom:6px">DISPOSITIVOS ACTIVOS</div>' +
-    act.map(d => '<div class="dev-row"><span>📱</span><div class="dev-name">' + (d.nombre||'Dispositivo') + '</div>' +
-      '<div class="dev-fecha">' + (d.fecha ? new Date(d.fecha).toLocaleDateString('es-MX') : '') + '</div>' +
-      '<button class="btn b-dan b-sm" onclick=\'expulsar("' + u.id + '",' + JSON.stringify(d).replace(/'/g,"\\'") + ')\'>🚫 Expulsar</button>' +
-    '</div>').join('') + '</div>' : '';
+  const disT  = `<span class="tag ${act.length>=per?'tr':'tg'}">📱 ${act.length}/${per}</span>`;
+  const nota  = u.notaPago ? `<div class="nota-p">💰 ${u.notaPago}</div>` : '';
+  const admLink = !esAdmin && u.adminId
+    ? `<div style="font-size:12px;color:#0369a1;font-weight:700;margin-bottom:4px">🔗 Admin: <strong>${u.adminId}</strong></div>`
+    : '';
 
-  return '<div class="u-card">' +
-    '<div class="u-top">' +
-    '<span style="font-size:30px">👤</span>' +
-    '<div class="u-info">' +
-      '<div class="u-name">' + u.id + '</div>' +
-      '<div class="u-meta">' + rolT + ' ' + estT + ' ' + disT + ' <span style="font-size:11px;color:#94a3b8">🔑 ' + (u.password||'—') + '</span></div>' +
-      nota + devs +
-    '</div>' +
-    '<div class="u-acts">' +
-      '<button class="btn b-gho b-sm" onclick=\'editar("' + u.id + '")\'>✏️ Editar</button>' +
-      (u.activa
-        ? '<button class="btn b-war b-sm" onclick=\'toggleLic("' + u.id + '",false)\'>🔴 Desactivar</button>'
-        : '<button class="btn b-suc b-sm" onclick=\'toggleLic("' + u.id + '",true)\'>🟢 Activar</button>') +
-      '<button class="btn b-pur b-sm" onclick=\'cambiarRol("' + u.id + '","' + (u.rol||'cajero') + '")\''+'>' + (u.rol==='admin'?'🛒→Cajero':'👑→Admin') + '</button>' +
-      '<button class="btn b-dan b-sm" onclick=\'eliminar("' + u.id + '")\'>🗑️</button>' +
-    '</div></div></div>';
+  // Permisos visuales (solo para cajeros)
+  let permisosHTML = '';
+  if (!esAdmin) {
+    const p = u.permisos || {};
+    permisosHTML = `<div class="permisos-box">
+      <div class="permisos-titulo">Permisos asignados</div>
+      <div class="permisos-grid">
+        <span class="permiso-item ${p.corte?'permiso-on':'permiso-off'}">✂️ Corte</span>
+        <span class="permiso-item ${p.reportes?'permiso-on':'permiso-off'}">📊 Reportes</span>
+        <span class="permiso-item ${p.config?'permiso-on':'permiso-off'}">⚙️ Config</span>
+        <span class="permiso-item ${p.inventarioEditar!==false?'permiso-on':'permiso-off'}">🗑️ Inv. editar</span>
+        <span class="permiso-item permiso-on">🛒 Venta</span>
+        <span class="permiso-item permiso-on">📦 Almacén</span>
+      </div>
+    </div>`;
+  }
+
+  // Dispositivos activos
+  let devsHTML = '';
+  if (act.length) {
+    devsHTML = `<div class="devs"><div style="font-size:10px;color:#94a3b8;font-weight:800;text-transform:uppercase;margin-bottom:6px">Dispositivos activos</div>`;
+    act.forEach(d => {
+      devsHTML += `<div class="dev-row"><span>📱</span>
+        <div class="dev-name">${d.nombre||'Dispositivo'}</div>
+        <div class="dev-fecha">${d.fecha?new Date(d.fecha).toLocaleDateString('es-MX'):''}</div>
+        <button class="btn b-dan b-sm" onclick='expulsar("${u.id}",${JSON.stringify(d).replace(/'/g,"\\'")})''>🚫 Expulsar</button>
+      </div>`;
+    });
+    devsHTML += '</div>';
+  }
+
+  return `<div class="u-card ${esAdmin?'admin-card':'cajero-card'}">
+    <div class="u-top">
+      <span style="font-size:28px">${esAdmin?'👑':'🛒'}</span>
+      <div class="u-info">
+        <div class="u-name">${u.id}</div>
+        ${u.farmaciaName?`<div class="u-farmacia">🏪 ${u.farmaciaName}</div>`:''}
+        ${admLink}
+        <div class="u-meta">${rolT} ${estT} ${disT} <span style="font-size:11px;color:#94a3b8">🔑 ${u.password||'—'}</span></div>
+        ${nota}
+        ${permisosHTML}
+        ${devsHTML}
+      </div>
+      <div class="u-acts">
+        <button class="btn b-gho b-sm" onclick='editar("${u.id}")'>✏️ Editar</button>
+        ${u.activa
+          ? `<button class="btn b-war b-sm" onclick='toggleLic("${u.id}",false)'>🔴 Desactivar</button>`
+          : `<button class="btn b-suc b-sm" onclick='toggleLic("${u.id}",true)'>🟢 Activar</button>`}
+        <button class="btn b-pur b-sm" onclick='cambiarRol("${u.id}","${u.rol||'cajero'}")'>${u.rol==='admin'?'🛒→Cajero':'👑→Admin'}</button>
+        <button class="btn b-dan b-sm" onclick='eliminar("${u.id}")'>🗑️</button>
+      </div>
+    </div>
+  </div>`;
 }
 
-// ─── ACCIONES ─────────────────────────────────────────────────────────────────
-async function toggleLic(id, val) {
-  if (!confirm((val?'Activar':'Desactivar') + ' la licencia de "' + id + '"?')) return;
-  try { await lic.doc(id).update({ activa: val }); toast((val?'🟢 Activada':'🔴 Desactivada') + ': ' + id, val?'success':'error'); }
-  catch(e) { toast('❌ ' + e.message, 'error'); }
+// ─── ACCIONES ────────────────────────────────────────────────────────────────
+async function toggleLic(id,val) {
+  if(!confirm((val?'Activar':'Desactivar')+' la licencia de "'+id+'"?'))return;
+  try{await lic.doc(id).update({activa:val});toast((val?'🟢 Activada':'🔴 Desactivada')+': '+id,val?'success':'error');}
+  catch(e){toast('❌ '+e.message,'error');}
 }
 
-async function cambiarRol(id, rolActual) {
-  const nuevo = rolActual === 'admin' ? 'cajero' : 'admin';
-  if (!confirm('¿Cambiar "' + id + '" a rol ' + nuevo + '?')) return;
-  try { await lic.doc(id).update({ rol: nuevo }); toast('Rol cambiado: ' + id + ' → ' + nuevo, 'success'); }
-  catch(e) { toast('❌ ' + e.message, 'error'); }
+async function cambiarRol(id,rolActual) {
+  const nuevo=rolActual==='admin'?'cajero':'admin';
+  if(!confirm('¿Cambiar "'+id+'" a rol '+nuevo+'?'))return;
+  try{await lic.doc(id).update({rol:nuevo});toast('Rol cambiado: '+id+' → '+nuevo,'success');}
+  catch(e){toast('❌ '+e.message,'error');}
 }
 
-async function expulsar(userId, disp) {
-  if (!confirm('¿Expulsar "' + (disp.nombre||'Dispositivo') + '" de "' + userId + '"?\nSe cierra sesión al instante.')) return;
-  try {
-    await lic.doc(userId).update({ dispositivosActivos: firebase.firestore.FieldValue.arrayRemove(disp) });
-    toast('🚫 Dispositivo expulsado', 'success');
-  } catch(e) { toast('❌ ' + e.message, 'error'); }
+async function expulsar(userId,disp) {
+  if(!confirm('¿Expulsar "'+( disp.nombre||'Dispositivo')+'" de "'+userId+'"?\nSe cierra sesión al instante.'))return;
+  try{
+    await lic.doc(userId).update({dispositivosActivos:firebase.firestore.FieldValue.arrayRemove(disp)});
+    toast('🚫 Dispositivo expulsado','success');
+  }catch(e){toast('❌ '+e.message,'error');}
 }
 
 async function eliminar(id) {
-  if (!confirm('⚠️ ¿ELIMINAR "' + id + '"? No se puede deshacer.')) return;
-  if (!confirm('Confirma: ¿eliminar permanentemente "' + id + '"?')) return;
-  try { await lic.doc(id).delete(); toast('🗑️ Eliminado: ' + id, 'info'); }
-  catch(e) { toast('❌ ' + e.message, 'error'); }
+  if(!confirm('⚠️ ¿ELIMINAR "'+id+'"? No se puede deshacer.'))return;
+  if(!confirm('Confirma: ¿eliminar permanentemente "'+id+'"?'))return;
+  try{await lic.doc(id).delete();toast('🗑️ Eliminado: '+id,'info');}
+  catch(e){toast('❌ '+e.message,'error');}
 }
 
-// ─── MODAL ────────────────────────────────────────────────────────────────────
-let _edit = false, _editId = null;
+// ─── MODAL ───────────────────────────────────────────────────────────────────
+let _edit=false,_editId=null;
+
+function togglePermisosModal(rol) {
+  const sec=document.getElementById('seccionPermisos');
+  const campoAdmin=document.getElementById('campoAdminId');
+  sec.style.display = rol==='admin'?'none':'';
+  campoAdmin.style.display = rol==='admin'?'none':'';
+}
 
 function abrirCrear() {
-  _edit = false; _editId = null;
-  document.getElementById('mTit').textContent = '➕ Nuevo usuario';
-  document.getElementById('btnG').textContent = '💾 Crear usuario';
-  document.getElementById('mUser').value = '';
-  document.getElementById('mUser').disabled = false;
-  document.getElementById('mPass').value = '';
-  document.getElementById('mRol').value = 'cajero';
-  document.getElementById('mDisp').value = '1';
-  document.getElementById('mNota').value = '';
+  _edit=false;_editId=null;
+  document.getElementById('mTit').textContent='➕ Nuevo usuario';
+  document.getElementById('btnG').textContent='💾 Crear usuario';
+  document.getElementById('mUser').value='';
+  document.getElementById('mUser').disabled=false;
+  document.getElementById('mFarmaciaName').value='';
+  document.getElementById('mPass').value='';
+  document.getElementById('mRol').value='cajero';
+  document.getElementById('mAdminId').value='';
+  document.getElementById('mDisp').value='1';
+  document.getElementById('mNota').value='';
+  document.getElementById('pCorte').checked=false;
+  document.getElementById('pReportes').checked=false;
+  document.getElementById('pConfig').checked=false;
+  document.getElementById('pInvEdit').checked=true;
+  togglePermisosModal('cajero');
   document.getElementById('modalU').classList.remove('oculto');
-  setTimeout(() => document.getElementById('mUser').focus(), 100);
+  setTimeout(()=>document.getElementById('mUser').focus(),100);
 }
 
 async function editar(id) {
-  _edit = true; _editId = id;
-  document.getElementById('mTit').textContent = '✏️ Editar: ' + id;
-  document.getElementById('btnG').textContent = '💾 Guardar cambios';
-  document.getElementById('mUser').value = id;
-  document.getElementById('mUser').disabled = true;
+  _edit=true;_editId=id;
+  document.getElementById('mTit').textContent='✏️ Editar: '+id;
+  document.getElementById('btnG').textContent='💾 Guardar cambios';
+  document.getElementById('mUser').value=id;
+  document.getElementById('mUser').disabled=true;
   try {
-    const s = await lic.doc(id).get();
-    const d = s.data();
-    document.getElementById('mPass').value = d.password || '';
-    document.getElementById('mRol').value  = d.rol || 'cajero';
-    document.getElementById('mDisp').value = String(d.dispositivosPermitidos || 1);
-    document.getElementById('mNota').value = d.notaPago || '';
+    const s=await lic.doc(id).get();
+    const d=s.data();
+    document.getElementById('mFarmaciaName').value=d.farmaciaName||'';
+    document.getElementById('mPass').value=d.password||'';
+    document.getElementById('mRol').value=d.rol||'cajero';
+    document.getElementById('mAdminId').value=d.adminId||'';
+    document.getElementById('mDisp').value=String(d.dispositivosPermitidos||1);
+    document.getElementById('mNota').value=d.notaPago||'';
+    const p=d.permisos||{};
+    document.getElementById('pCorte').checked=!!p.corte;
+    document.getElementById('pReportes').checked=!!p.reportes;
+    document.getElementById('pConfig').checked=!!p.config;
+    document.getElementById('pInvEdit').checked=p.inventarioEditar!==false;
+    togglePermisosModal(d.rol||'cajero');
     document.getElementById('modalU').classList.remove('oculto');
-  } catch(e) { toast('❌ ' + e.message, 'error'); }
+  }catch(e){toast('❌ '+e.message,'error');}
 }
 
-function cerrarModal() { document.getElementById('modalU').classList.add('oculto'); }
+function cerrarModal(){document.getElementById('modalU').classList.add('oculto');}
 
 async function guardar() {
-  const user = document.getElementById('mUser').value.trim().toLowerCase().replace(/\s/g,'');
-  const pass = document.getElementById('mPass').value.trim();
-  const rol  = document.getElementById('mRol').value;
-  const disp = parseInt(document.getElementById('mDisp').value);
-  const nota = document.getElementById('mNota').value.trim();
-  if (!user) { toast('Escribe un usuario', 'error'); return; }
-  if (!pass) { toast('Escribe una contraseña', 'error'); return; }
-  const btn = document.getElementById('btnG');
-  btn.disabled = true; btn.textContent = 'Guardando...';
+  const user     =document.getElementById('mUser').value.trim().toLowerCase().replace(/\s/g,'');
+  const farmName =document.getElementById('mFarmaciaName').value.trim();
+  const pass     =document.getElementById('mPass').value.trim();
+  const rol      =document.getElementById('mRol').value;
+  const adminId  =document.getElementById('mAdminId').value.trim().toLowerCase()||null;
+  const disp     =parseInt(document.getElementById('mDisp').value);
+  const nota     =document.getElementById('mNota').value.trim();
+  const permisos ={
+    corte:           document.getElementById('pCorte').checked,
+    reportes:        document.getElementById('pReportes').checked,
+    config:          document.getElementById('pConfig').checked,
+    inventarioEditar:document.getElementById('pInvEdit').checked,
+  };
+  if(!user){toast('Escribe un usuario','error');return;}
+  if(!pass){toast('Escribe una contraseña','error');return;}
+  const btn=document.getElementById('btnG');
+  btn.disabled=true;btn.textContent='Guardando...';
   try {
-    if (_edit) {
-      await lic.doc(_editId).update({ password: pass, rol, dispositivosPermitidos: disp, ...(nota && { notaPago: nota }) });
-      toast('✅ Actualizado: ' + _editId, 'success');
+    if(_edit){
+      const upd={password:pass,rol,dispositivosPermitidos:disp,permisos};
+      if(farmName)upd.farmaciaName=farmName;
+      if(adminId!==null)upd.adminId=adminId;
+      if(nota!=='')upd.notaPago=nota;
+      await lic.doc(_editId).update(upd);
+      toast('✅ Actualizado: '+_editId,'success');
     } else {
-      const ex = await lic.doc(user).get();
-      if (ex.exists) { toast('❌ Ya existe ese usuario', 'error'); btn.disabled = false; btn.textContent = '💾 Crear usuario'; return; }
-      await lic.doc(user).set({ activa: true, password: pass, rol, dispositivosPermitidos: disp, dispositivosActivos: [], notaPago: nota, creadoEn: new Date().toISOString() });
-      toast('✅ Usuario creado: ' + user, 'success');
+      const ex=await lic.doc(user).get();
+      if(ex.exists){toast('❌ Ya existe ese usuario','error');btn.disabled=false;btn.textContent='💾 Crear usuario';return;}
+      await lic.doc(user).set({
+        activa:true,password:pass,rol,
+        farmaciaName:farmName,
+        adminId,
+        permisos,
+        dispositivosPermitidos:disp,
+        dispositivosActivos:[],
+        notaPago:nota,
+        creadoEn:new Date().toISOString()
+      });
+      toast('✅ Usuario creado: '+user,'success');
     }
     cerrarModal();
-  } catch(e) { toast('❌ ' + e.message, 'error'); }
-  btn.disabled = false;
-  btn.textContent = _edit ? '💾 Guardar cambios' : '💾 Crear usuario';
+  }catch(e){toast('❌ '+e.message,'error');}
+  btn.disabled=false;
+  btn.textContent=_edit?'💾 Guardar cambios':'💾 Crear usuario';
 }
 
-// ─── TOAST ────────────────────────────────────────────────────────────────────
+// ─── TOAST ───────────────────────────────────────────────────────────────────
 let _tt;
-function toast(msg, type='success') {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'show ' + type;
-  clearTimeout(_tt); _tt = setTimeout(() => t.className = '', 3500);
+function toast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='show '+type;
+  clearTimeout(_tt);_tt=setTimeout(()=>t.className='',3500);
 }
 
-// ─── PROTECCIÓN BÁSICA ────────────────────────────────────────────────────────
-document.addEventListener('contextmenu', e => e.preventDefault());
-document.addEventListener('keydown', e => {
-  if (e.key === 'F12') { e.preventDefault(); return; }
-  if ((e.ctrlKey||e.metaKey) && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) e.preventDefault();
-}, true);
+// ─── PROTECCIÓN ──────────────────────────────────────────────────────────────
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{
+  if(e.key==='F12'){e.preventDefault();return;}
+  if((e.ctrlKey||e.metaKey)&&e.shiftKey&&['I','J','C'].includes(e.key.toUpperCase()))e.preventDefault();
+},true);
 </script>
 </body>
 </html>
